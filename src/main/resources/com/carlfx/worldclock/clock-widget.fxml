@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<HBox styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WorldClockController">
+   <children>
+      <VBox alignment="CENTER_RIGHT" prefHeight="104.0" prefWidth="149.0" style="-fx-background-color: #00000000;" styleClass="date-background" stylesheets="@styles.css">
+         <children>
+            <Label id="region-country" fx:id="locationRegion" alignment="CENTER" maxWidth="-Infinity" prefHeight="17.0" text="Pasadena MD, USA" textAlignment="CENTER" textFill="#ff9d00" />
+            <Label fx:id="day" styleClass="date-day" text="Sunday" textFill="WHITE" />
+            <Label fx:id="monthDate" styleClass="date-month" stylesheets="@styles.css" text="March 19" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Thin" size="18.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </VBox>
+      <StackPane maxHeight="55.0" maxWidth="-Infinity">
+         <children>
+            <Group>
+               <children>
+                  <Circle id="minute-hand-shadow" fill="#1f1f1f00" radius="45.0" stroke="#403939" strokeType="INSIDE" strokeWidth="2.0" />
+                  <Arc id="minute-hand-arc" fx:id="minuteHandArc" fill="#ff215900" length="294.0" radiusX="45.0" radiusY="45.0" startAngle="156.0" stroke="#2fdae0e5" strokeWidth="3.0">
+                     <effect>
+                        <GaussianBlur radius="6.93" />
+                     </effect>
+                  </Arc>
+                  <Circle id="hour-hand-shadow" fill="#1f93ff00" radius="35.0" stroke="#403939db" strokeWidth="4.0" />
+                  <Arc id="hour-hand-arc" fx:id="hourHandArc" fill="#1f93ff00" length="90.0" opacity="0.91" radiusX="35.0" radiusY="35.0" stroke="#de752ff7" strokeLineCap="BUTT" strokeLineJoin="ROUND" strokeMiterLimit="0.0" strokeWidth="4.0">
+                     <effect>
+                        <Glow level="0.34">
+                           <input>
+                              <Bloom />
+                           </input>
+                        </Glow>
+                     </effect>
+                  </Arc>
+                  <Circle id="minute-hand-tip" fx:id="minuteHandTip" radius="4.0" stroke="TRANSPARENT" strokeType="INSIDE" translateX="-41.109" translateY="-18.0">
+                     <fill>
+                        <RadialGradient centerX="0.5" centerY="0.5" focusDistance="0.023809523809523725" radius="0.45238095238095233">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="0.18431372940540314" green="0.8549019694328308" blue="0.8784313797950745" opacity="0.8999999761581421" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </RadialGradient>
+                     </fill>
+                     <effect>
+                         <GaussianBlur radius="3.09">
+                           <input>
+                              <Glow />
+                           </input>
+                        </GaussianBlur>
+                     </effect>
+                  </Circle>
+                  <Circle id="hour-hand-tip" fx:id="hourHandTip" radius="5.0" stroke="TRANSPARENT" strokeType="INSIDE" translateX="35.0">
+                     <fill>
+                        <RadialGradient centerX="0.5" centerY="0.5" focusDistance="0.023809523809523725" radius="0.45238095238095233">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="0.8705882430076599" green="0.4588235318660736" blue="0.18431372940540314" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </RadialGradient>
+                     </fill>
+                     <effect>
+                        <GaussianBlur radius="3.09">
+                           <input>
+                              <Glow />
+                           </input>
+                        </GaussianBlur>
+                     </effect>
+                  </Circle>
+               </children>
+            </Group>
+            <Group />
+            <Text fx:id="clockTime" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="clock-digits" text="3:49" textAlignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </StackPane>
+      <VBox alignment="TOP_CENTER">
+         <children>
+            <ImageView fitHeight="57.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@04n2x.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="temperatureText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="temperature" text="33°C">
+               <font>
+                  <Font name="Roboto Medium" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+   </children>
+</HBox>

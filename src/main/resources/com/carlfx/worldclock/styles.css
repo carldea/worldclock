@@ -1,0 +1,63 @@
+.root {
+   -fx-background-color:rgba(0,0,0,0.75);
+}
+/* Not working look at App.java init() method */
+@font-face {
+    font-family: 'Roboto-Medium';
+    src: url('Roboto-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto-Thin';
+    src: url('Roboto-Thin.ttf');
+}
+@font-face {
+    font-family: 'Roboto-Bold';
+    src: url('Roboto-Bold.ttf');
+}
+@font-face {
+    font-family: 'RobotoMono-Medium';
+    src: url('RobotoMono-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'RobotoMono Medium';
+    src: url('RobotoMono-Medium.ttf');
+}
+
+.clock-background {
+    -fx-background-color: rgba(0,0,0,.90);
+}
+
+.date-background {
+    -fx-background-color: rgba(0, 0, 0, 0.75);
+}
+
+#region-country {
+    -fx-font-family: "Roboto Medium";
+    -fx-font-weight: 100;
+    -fx-font-size: 16;
+    -fx-font-style: normal;
+}
+
+.date-day {
+    -fx-font-family: "Roboto Thin";
+    -fx-font-weight: 900;
+    -fx-font-size: 14;
+    -fx-font-style: normal;
+}
+.date-month {
+    -fx-font-family: "Roboto Bold";
+    -fx-font-weight: 800;
+    -fx-font-size: 20;
+    -fx-font-style: normal;
+}
+
+.clock-digits {
+    -fx-font-family: "Roboto Bold";
+    -fx-font-size: 20;
+}
+.temperature {
+    -fx-font-family: "Roboto Black";
+    -fx-font-size: 18;
+}
