@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="160.0" styleClass="window-control-bar" stylesheets="@window-controls.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WindowController">
+   <children>
+      <Button fx:id="configButton" alignment="CENTER" cacheShape="false" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMousePressed="#handleConfigWorldClockAction" prefHeight="20.0" prefWidth="20.0" styleClass="config-gear" text="Button1">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <HBox.margin>
+            <Insets right="15.0" />
+         </HBox.margin>
+      </Button>
+      <Button fx:id="closeButton" alignment="CENTER" cacheShape="false" maxHeight="10.0" maxWidth="10.0" minHeight="9.0" minWidth="15.0" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMouseReleased="#handleCloseWindowAction" prefHeight="9.0" prefWidth="20.0" styleClass="window-close" textFill="#941515">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+      </Button>
+   </children>
+   <padding>
+      <Insets right="5.0" />
+   </padding>
+</HBox>

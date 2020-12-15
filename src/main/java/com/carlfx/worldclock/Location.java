@@ -48,10 +48,20 @@ public class Location {
         CELSIUS,
         FAHRENHEIT
     }
-    public Location(String timezone, String city, String countryCode, float temp, TEMP_STD tempType) {
+
+    public Location(String timezone, String city, String countryCode) {
         this.timezone = timezone;
         this.city = city;
         this.countryCode = countryCode;
+    }
+
+    public Location(String timezone, String city, String countryCode, double [] latLong) {
+        this(timezone, city, countryCode);
+        this.latLong = latLong;
+    }
+
+    public Location(String timezone, String city, String countryCode, float temp, TEMP_STD tempType) {
+        this(timezone, city, countryCode);
         this.temperature = temp;
         this.tempType = tempType;
     }
@@ -101,7 +111,17 @@ public class Location {
     }
 
     public void setLatLong(double[] latLong) {
+        if (latLong == null || latLong.length != 2) {
+            throw new IllegalArgumentException("Latitude and Longitude is a two element array of type double.");
+        }
         this.latLong = latLong;
+    }
+
+    public double getLatitude() {
+        return this.latLong[0];
+    }
+    public double getLongitude() {
+        return this.latLong[1];
     }
 
     public Image getWeatherImage() {

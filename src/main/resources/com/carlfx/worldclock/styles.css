@@ -1,5 +1,5 @@
 .root {
-   -fx-background-color:rgba(0,0,0,0.75);
+   -fx-background-color: transparent;
 }
 /* Not working look at App.java init() method */
 @font-face {
@@ -24,7 +24,9 @@
     font-family: 'RobotoMono Medium';
     src: url('RobotoMono-Medium.ttf');
 }
-
+.window-container {
+    -fx-background-color: transparent;
+}
 .clock-background {
     -fx-background-color: rgba(0,0,0,.90);
 }
