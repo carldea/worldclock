@@ -125,7 +125,8 @@ public class App extends Application {
              .add(getClass()
              .getResource("styles.css")
              .toExternalForm());
-
+        
+        scene.setFill(null);
         stage.setScene(scene);
         stage.show();
     }
