@@ -49,10 +49,21 @@ public class App extends Application {
             "RobotoMono-Medium.ttf"
     };
 
+    public static String configFile = "worldclock-config.properties";
+
     @Override
     public void init() throws Exception {
         super.init();
+        // load fonts
         Arrays.stream(fontFiles).forEach( f -> fontLoader(f));
+
+        // load locations
+        loadLocations();
+    }
+    private void loadLocations() {
+        // detect if file exists?
+
+        // if not create fake data
     }
     private void fontLoader(String fileName) {
         Font.loadFont(App.class.getResource(fileName).toExternalForm(), 20);

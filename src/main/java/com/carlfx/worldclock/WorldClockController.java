@@ -1,21 +1,18 @@
 package com.carlfx.worldclock;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class WorldClockController {
 
@@ -73,7 +70,7 @@ public class WorldClockController {
 
         // add 90 degress to position start at the 12'o clock position.
         // JavaFX arc goes counter clockwise starting zero degrees at the 3 o'clock
-        return degrees + 90;
+        return (degrees + 90) % 360;
     };
 
     /**
@@ -84,7 +81,7 @@ public class WorldClockController {
         int degrees = (12 - hours) * 30;
 
         // make the extent angle counter clockwise to the 12'o clock position
-        return 360 - degrees;
+        return (360 - degrees) % 360;
     };
 
     /**
