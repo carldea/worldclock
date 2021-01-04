@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WorldClockController">
+<HBox prefWidth="314.0" styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WorldClockController">
    <children>
       <VBox alignment="CENTER_RIGHT" prefHeight="104.0" prefWidth="149.0" style="-fx-background-color: #00000000;" styleClass="date-background" stylesheets="@styles.css">
          <children>

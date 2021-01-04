@@ -1,8 +1,6 @@
 package com.carlfx.worldclock;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
@@ -19,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -42,6 +41,7 @@ public class App extends Application {
     private static Scene scene;
     private static Stage stage;
     String [] fontFiles = {
+            "Roboto-Regular.ttf",
             "Roboto-Black.ttf",
             "Roboto-Bold.ttf",
             "Roboto-Light.ttf",
@@ -104,12 +104,21 @@ public class App extends Application {
             clocks.add(loadClockFXML(location, epochTime));
         }
         BorderPane windowContainer = new BorderPane();
+        windowContainer.getStyleClass().add("clock-background");
+        windowContainer.addEventHandler(WorldClockEvent.MAIN_APP_CLOSE, event -> stage.close());
+
         windowContainer.getStyleClass().add("window-container");
         VBox clockList = new VBox();
         Parent windowBar = loadWindowControlsFXML(locations);
         BorderPane.setAlignment(windowBar, Pos.CENTER_RIGHT);
         windowContainer.setTop(windowBar);
-        windowContainer.setCenter(clockList);
+
+        Pane centerPane = new Pane();
+        Parent configPane = loadConfigLocationsFXML(locations);
+        configPane.setVisible(false);
+        centerPane.getChildren().addAll(clockList, configPane);
+
+        windowContainer.setCenter(centerPane);
         makeDraggable(windowContainer);
         // fake map
         ImageView mapImage = new ImageView(new Image(App.class.getResourceAsStream("Mapimage.png")));
@@ -117,9 +126,48 @@ public class App extends Application {
         clockList.getStyleClass().add("clock-background");
         clockList.getChildren()
                 .addAll(clocks);
-        clockList.getChildren()
-                .add(mapImage);
 
+        windowContainer.addEventHandler(WorldClockEvent.CONFIG_SHOWING, event -> {
+            TranslateTransition moveList = new TranslateTransition();
+            moveList.setNode(clockList);
+            moveList.setDuration(Duration.millis(400));
+            WindowController windowController = event.getPayload();
+            if (windowController.isConfigShowing()) {
+                moveList.setInterpolator(Interpolator.EASE_OUT);
+                moveList.setFromX(0);
+                moveList.setToX(-clockList.getWidth());
+            } else {
+                moveList.setInterpolator(Interpolator.EASE_IN);
+                moveList.setFromX(-clockList.getWidth());
+                moveList.setToX(0);
+            }
+
+            TranslateTransition moveConfig = new TranslateTransition();
+
+            moveConfig.setNode(configPane);
+
+            moveConfig.setDuration(Duration.millis(400));
+            if (!windowController.isConfigShowing()) {
+                clockList.toFront();
+                moveConfig.setInterpolator(Interpolator.EASE_OUT);
+                moveConfig.setFromX(0);
+                moveConfig.setToX(-clockList.getWidth() + clockList.getPadding().getLeft() + clockList.getPadding().getRight());
+            } else {
+                configPane.setVisible(true);
+                configPane.toFront();
+                moveConfig.setInterpolator(Interpolator.EASE_IN);
+                moveConfig.setFromX(-clockList.getWidth() + clockList.getPadding().getLeft() + clockList.getPadding().getRight());
+                moveConfig.setToX(0);
+            }
+            System.out.println("clock list  width " + clockList.getWidth());
+            System.out.println("config pane width " + configPane.getBoundsInParent().getWidth());
+            System.out.println("window bar  width " + windowBar.getBoundsInParent().getWidth());
+            System.out.println(" image      width " + mapImage.getBoundsInParent().getWidth());
+            moveConfig.playFromStart();
+            moveList.playFromStart();
+        });
+
+        windowContainer.setBottom(mapImage);
         scene = new Scene(windowContainer);
         scene.getStylesheets()
              .add(getClass()
@@ -173,6 +221,13 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("window-controls.fxml"));
         Parent parent = fxmlLoader.load();
         WindowController controller = fxmlLoader.getController();
+        controller.init(locations);
+        return parent;
+    }
+    private static Parent loadConfigLocationsFXML(ObservableList<Location> locations) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
+        Parent parent = fxmlLoader.load();
+        ConfigLocationsController controller = fxmlLoader.getController();
         controller.init(locations);
         return parent;
     }

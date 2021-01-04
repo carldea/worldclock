@@ -63,3 +63,112 @@
     -fx-font-family: "Roboto Black";
     -fx-font-size: 18;
 }
+
+.config-text-fields {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#FFFFFF50";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// Background color of combo box
+.combo-box {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#FFFFFF50";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// Background of the text field item in display
+.combo-box .list-cell, .combo-box .text-input {
+    -fx-text-fill: white;
+}
+
+// background of the list view area of popup
+.combo-box .combo-box-popup .list-view {
+    -fx-background-color: "#00000050";
+    -fx-border-color: "#2fdae0ce";
+    -fx-background-insets: 0 0 0 0;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+
+// normal list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#101010ee";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// selected list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:selected {
+    -fx-background-color: "#2fdae0ce";
+    -fx-text-fill: white;
+}
+
+// hover over list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:hover {
+    -fx-background-color: "#2fdae0ce";
+    -fx-text-fill: white;
+}
+
+// track display
+.combo-box-popup .list-view .scroll-bar:vertical .track {
+    -fx-max-width: 10px;
+    -fx-background-color: "#2fdae0ce", black;
+    -fx-background-insets: 0 0 0 0, 1 0 1 1;
+    -fx-color: "#2fdae0ce";
+    -fx-border-color: transparent;
+   // -fx-border-width: 1px;
+}
+
+// normal thumb display
+.combo-box-popup .list-view .scroll-bar:vertical .thumb {
+    -fx-max-width: 8px;
+    -fx-background-color: "#2fdae0ce";
+    -fx-background-insets: 0 0 0 0;
+}
+.combo-box-popup .list-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+
+// normal increment and decrement buttons
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button {
+        -fx-background-color: "#2fdae0ce", black;
+    	-fx-color: "#2fdae0ce";
+    	-fx-background-insets: 0 0 0 0, 0 0 0 1;
+}
+
+// normal increment and decrement arrow
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button .increment-arrow,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button .decrement-arrow {
+        -fx-background-color: "#2fdae0ce" ;
+        -fx-background-insets: 0 0 0 0;
+        -fx-color: "#2fdae0ce";
+}
+// normal increment and decrement arrow
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button .increment-arrow:hover,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button .decrement-arrow:hover {
+        -fx-background-color:  "#2fdae0";
+        -fx-color: "#2fdae0";
+}
+
+.error-overlay {
+    -fx-shape: "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z";
+    -fx-background-color: "#de752fce";
+
+    /*-fx-background-color: "#2fdae090";*/
+    -fx-fill: "#000000";
+    -fx-stroke: "#de752fce"; /* #2fdae0ff */
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 12;
+    -fx-min-width: 12;
+    -fx-max-height: 12;
+    -fx-max-width: 12;
+}
+.error-overlay:hover {
+    -fx-background-color: "#de752f";
+}

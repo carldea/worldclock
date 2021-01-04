@@ -4,9 +4,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
+import static com.carlfx.worldclock.WorldClockEvent.CONFIG_SHOWING;
+import static com.carlfx.worldclock.WorldClockEvent.MAIN_APP_CLOSE;
 public class WindowController {
+    private boolean isConfigShowing = false;
     @FXML
     private Button closeButton;
 
@@ -33,10 +35,7 @@ public class WindowController {
     @FXML
     private void handleCloseWindowAction(MouseEvent mouseEvent) {
         if (closeButton.equals(targetButton)) {
-            Stage stage = (Stage) closeButton
-                    .getScene()
-                    .getWindow();
-            stage.close();
+            WorldClockEvent.trigger(closeButton, new WorldClockEvent(MAIN_APP_CLOSE, this));
         }
     }
 
@@ -44,6 +43,13 @@ public class WindowController {
     private void handleConfigWorldClockAction(MouseEvent mouseEvent) {
         if (configButton.equals(targetButton)) {
             System.out.println("config button hit " + mouseEvent);
+            isConfigShowing = !isConfigShowing;
+            WorldClockEvent.trigger(configButton, new WorldClockEvent(CONFIG_SHOWING, this));
         }
     }
+
+    public boolean isConfigShowing() {
+        return isConfigShowing;
+    }
+
 }

@@ -3,45 +3,24 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="160.0" styleClass="window-control-bar" stylesheets="@window-controls.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WindowController">
+<HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="160.0" spacing="15.0" styleClass="window-control-bar" stylesheets="@window-controls.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WindowController">
    <children>
-      <StackPane>
-         <children>
-            <Circle fill="#2fdae000" radius="9.5" stroke="#2fdae0" strokeType="OUTSIDE" strokeWidth="0.0" />
-            <Button fx:id="configButton" alignment="CENTER" cacheShape="false" contentDisplay="CENTER" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMousePressed="#handleConfigWorldClockAction" scaleX="1.25" scaleY="1.25" snapToPixel="false" styleClass="config-gear" text="config" textAlignment="CENTER" StackPane.alignment="CENTER">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <StackPane.margin>
-                  <Insets />
-               </StackPane.margin>
-            </Button>
-         </children>
-         <padding>
-            <Insets right="10.0" />
-         </padding>
-      </StackPane>
-      <StackPane>
-         <HBox.margin>
+      <Button fx:id="configButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMousePressed="#handleConfigWorldClockAction" scaleX="1.25" scaleY="1.25" snapToPixel="false" styleClass="config-gear" text="config" textAlignment="CENTER">
+         <opaqueInsets>
             <Insets />
-         </HBox.margin>
-         <children>
-            <Circle fill="#2fdae000" radius="10.0" stroke="#2fdae0" strokeType="INSIDE" strokeWidth="1.5" visible="false" />
-            <Button fx:id="closeButton" alignment="CENTER" cacheShape="false" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMouseReleased="#handleCloseWindowAction" scaleX="1.25" scaleY="1.25" styleClass="window-close" text="close" textFill="#941515">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <StackPane.margin>
-                  <Insets bottom="1.5" right="0.25" />
-               </StackPane.margin>
-            </Button>
-         </children>
-      </StackPane>
+         </opaqueInsets>
+      </Button>
+      <Button fx:id="closeButton" alignment="CENTER" cacheShape="false" mnemonicParsing="false" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" onMouseReleased="#handleCloseWindowAction" scaleX="1.25" scaleY="1.25" styleClass="window-close" text="close" textFill="#941515">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
    </children>
    <padding>
       <Insets right="5.0" />
    </padding>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
 </HBox>
