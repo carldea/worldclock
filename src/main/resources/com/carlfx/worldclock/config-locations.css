@@ -1,0 +1,286 @@
+.label-text {
+   -fx-font-family: "Roboto Medium";
+   -fx-font-weight: 100;
+   -fx-font-size: 12;
+   -fx-font-style: normal;
+   -fx-fill: "#2fdae0ce";
+   -fx-stroke: "#2fdae0ce";
+   -fx-stroke-width: 0;
+}
+
+.header-label-text {
+   -fx-font-family: "Roboto Medium";
+   -fx-font-weight: 100;
+   -fx-font-size: 14;
+   -fx-font-style: bold;
+   -fx-fill: "#ffffffee";
+   -fx-stroke: "#2fdae0ce";
+   -fx-stroke-width: 0;
+}
+
+.error-overlay {
+    -fx-shape: "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z";
+    -fx-background-color: "#de752fce";
+
+    /*-fx-background-color: "#2fdae090";*/
+    -fx-fill: "#000000";
+    -fx-stroke: "#de752fce"; /* #2fdae0ff */
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 12;
+    -fx-min-width: 12;
+    -fx-max-height: 12;
+    -fx-max-width: 12;
+}
+.error-overlay:hover {
+    -fx-background-color: "#de752f";
+}
+
+
+.config-text-fields {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#40404050";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// Background color of List View
+.list-view {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#40404050";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// Background of the text field item in display
+.list-view .list-cell .cell.indexed-cell.list-cell {
+    -fx-background-color: "#40404050";
+    -fx-text-fill: #2fdae0ce;
+}
+/*
+.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: linear-gradient(#2fdae0ce 0%, #2fdae0dd 25%, #2fdae0ee 75%, #2fdae0ff 100%);
+    -fx-text-fill: white;
+}
+*/
+
+.list-view .list-cell:even { /* <=== changed to even */
+    -fx-background-color: "#40404050";
+}
+
+.list-view .list-cell:filled:hover {
+    -fx-background-color: "#101010ee";
+    -fx-text-fill: white;
+}
+
+// Background color of combo box
+.combo-box {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#40404050";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// Background of the text field item in display
+.combo-box .list-cell, .combo-box .text-input {
+    -fx-text-fill: white;
+}
+
+// background of the list view area of popup
+.combo-box .combo-box-popup .list-view {
+    -fx-background-color: "#00000050";
+    -fx-border-color: "#2fdae0ce";
+    -fx-background-insets: 0 0 0 0;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+
+// normal list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell,
+.list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell {
+    -fx-font-family: "Roboto Regular";
+    -fx-background-color: "#101010ee";
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+// selected list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:selected,
+.list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:selected {
+    -fx-background-color: "#2fdae0ce";
+    -fx-text-fill: white;
+}
+
+// hover over list item
+.combo-box .combo-box-popup .list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:hover,
+.list-view .virtual-flow .clipped-container .sheet .cell.indexed-cell.list-cell:hover {
+    /*-fx-background-color: "#2fdae0bb";*/
+    -fx-text-fill: "#2fdae0ff";
+
+    -fx-background-color: "#00000050";
+    -fx-border-color: "#2fdae0ff";
+    -fx-background-insets: 0 0 0 0;
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+}
+
+// track display
+.combo-box-popup .list-view .scroll-bar:vertical .track,
+.list-view .scroll-bar:vertical .track {
+    -fx-max-width: 10px;
+    -fx-background-color: "#2fdae0ce", black;
+    -fx-background-insets: 0 0 0 0, 1 1 1 1;
+    -fx-color: "#2fdae0ce";
+    -fx-border-color: transparent;
+   // -fx-border-width: 1px;
+}
+
+// normal thumb display
+.combo-box-popup .list-view .scroll-bar:vertical .thumb,
+.list-view .scroll-bar:vertical .thumb {
+    -fx-max-width: 8px;
+    -fx-background-color: "#2fdae0ce";
+    -fx-background-insets: 0 0 0 0;
+}
+.combo-box-popup .list-view .scroll-bar:vertical .thumb:hover,
+.list-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+
+// normal increment and decrement buttons
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button,
+.list-view .scroll-bar:vertical .increment-button,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button,
+.list-view .scroll-bar:vertical .decrement-button {
+        -fx-background-color: "#2fdae0ce", black;
+    	-fx-color: "#2fdae0ce";
+    	-fx-background-insets: 0 0 0 0, 1 1 1 1;
+}
+
+// normal increment and decrement arrow
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button .increment-arrow,
+.list-view .scroll-bar:vertical .increment-button .increment-arrow,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button .decrement-arrow,
+.list-view .scroll-bar:vertical .decrement-button .decrement-arrow {
+        -fx-background-color: "#2fdae0ce" ;
+        -fx-background-insets: 0 0 0 0;
+        -fx-color: "#2fdae0ce";
+}
+// normal increment and decrement arrow
+.combo-box-popup .list-view .scroll-bar:vertical .increment-button .increment-arrow:hover,
+.list-view .scroll-bar:vertical .increment-button .increment-arrow:hover,
+.combo-box-popup .list-view .scroll-bar:vertical .decrement-button .decrement-arrow:hover,
+.list-view .scroll-bar:vertical .decrement-button .decrement-arrow:hover {
+        -fx-background-color:  "#2fdae0";
+        -fx-color: "#2fdae0";
+}
+.save-location-button {
+   -fx-font-family: "Roboto Medium";
+   -fx-font-weight: 100;
+   -fx-font-size: 12;
+   -fx-font-style: normal;
+   -fx-text-fill: "#2fdae0ce";
+
+   -fx-background-color: "#2fdae0ce", black;
+   -fx-background-insets: 0 0 0 0, 1 1 1 1;
+   /*-fx-color: "#2fdae0ce";*/ /* text color*/
+   -fx-border-color: "#2fdae0ce";
+   -fx-border-width: 1px;
+}
+.save-location-button:hover {
+   -fx-text-fill: "#ffffffff";
+
+   -fx-background-color: "#2fdae0", black, "#2fdae0";
+   -fx-background-insets: 0 0 0 0, 1 1 1 1, 3 3 3 3;
+   -fx-border-color: "#2fdae0ce";
+   -fx-border-width: 1px;
+}
+.save-location-button:armed {
+   -fx-text-fill: "#202020";
+
+   -fx-background-color: "#2fdae0", black, "#2fdae0";
+   -fx-background-insets: 0 0 0 0, 1 1 1 1, 4 2 2 4;
+   /*-fx-color: "#2fdae0ce";*/ /* text color*/
+   -fx-border-color: "#2fdae0ce";
+   -fx-border-width: 1px;
+}
+
+.add-location-button {
+    -fx-shape: "M352 240v32c0 6.6-5.4 12-12 12h-88v88c0 6.6-5.4 12-12 12h-32c-6.6 0-12-5.4-12-12v-88h-88c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h88v-88c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v88h88c6.6 0 12 5.4 12 12zm96-160v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z";
+    -fx-background-color: "#2fdae0dd";
+
+    -fx-fill: "#000000";
+    -fx-stroke: "#2fdae0ff";
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+    -fx-max-height: 20;
+    -fx-max-width: 20;
+}
+.add-location-button:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+.edit-location-button {
+    -fx-shape: "M402.3 344.9l32-32c5-5 13.7-1.5 13.7 5.7V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h273.5c7.1 0 10.7 8.6 5.7 13.7l-32 32c-1.5 1.5-3.5 2.3-5.7 2.3H48v352h352V350.5c0-2.1.8-4.1 2.3-5.6zm156.6-201.8L296.3 405.7l-90.4 10c-26.2 2.9-48.5-19.2-45.6-45.6l10-90.4L432.9 17.1c22.9-22.9 59.9-22.9 82.7 0l43.2 43.2c22.9 22.9 22.9 60 .1 82.8zM460.1 174L402 115.9 216.2 301.8l-7.3 65.3 65.3-7.3L460.1 174zm64.8-79.7l-43.2-43.2c-4.1-4.1-10.8-4.1-14.8 0L436 82l58.1 58.1 30.9-30.9c4-4.2 4-10.8-.1-14.9z";
+    -fx-background-color: "#2fdae0dd";
+    -fx-fill: "#000000";
+    -fx-stroke: "#2fdae0ff";
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+    -fx-max-height: 20;
+    -fx-max-width: 20;
+}
+
+.edit-location-button:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+.delete-location-button {
+    -fx-shape: "M108 284c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h232c6.6 0 12 5.4 12 12v32c0 6.6-5.4 12-12 12H108zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z";
+    -fx-background-color: "#2fdae0dd";
+    -fx-fill: "#000000";
+    -fx-stroke: "#2fdae0ff";
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+    -fx-max-height: 20;
+    -fx-max-width: 20;
+}
+
+.delete-location-button:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+.move-up-button {
+    -fx-shape: "M322.9 304H125.1c-10.7 0-16.1-13-8.5-20.5l98.9-98.3c4.7-4.7 12.2-4.7 16.9 0l98.9 98.3c7.7 7.5 2.3 20.5-8.4 20.5zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z";
+    -fx-background-color: "#2fdae0dd";
+
+    -fx-fill: "#000000";
+    -fx-stroke: "#2fdae0ff";
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+    -fx-max-height: 20;
+    -fx-max-width: 20;
+}
+.move-up-button:hover {
+    -fx-background-color: "#2fdae0";
+}
+
+.move-down-button {
+    -fx-shape: "M125.1 208h197.8c10.7 0 16.1 13 8.5 20.5l-98.9 98.3c-4.7 4.7-12.2 4.7-16.9 0l-98.9-98.3c-7.7-7.5-2.3-20.5 8.4-20.5zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z";
+    -fx-background-color: "#2fdae0dd";
+
+    -fx-fill: "#000000";
+    -fx-stroke: "#2fdae0ff";
+    -fx-stroke-width: 1.5;
+    -fx-min-height: 20;
+    -fx-min-width: 20;
+    -fx-max-height: 20;
+    -fx-max-width: 20;
+}
+.move-down-button:hover {
+    -fx-background-color: "#2fdae0";
+}

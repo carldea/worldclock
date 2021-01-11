@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,9 +14,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="309.0" prefWidth="314.0" styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.ConfigLocationsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="412.0" prefWidth="314.0" styleClass="clock-background" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.ConfigLocationsController">
    <children>
-      <Text fill="WHITE" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Locations Configurations" wrappingWidth="177.21630859375">
+      <Text fill="WHITE" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-label-text" text="Locations Configurations" wrappingWidth="177.21630859375">
          <font>
             <Font name="Roboto Medium" size="13.0" />
          </font>
@@ -23,12 +25,12 @@
          <children>
             <HBox alignment="BOTTOM_LEFT">
                <children>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" text="City" wrappingWidth="214.6875">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="City" wrappingWidth="214.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
                   </Text>
-                  <Text fill="#ffffff95" strokeType="OUTSIDE" strokeWidth="0.0" text="State" wrappingWidth="61.21630859375">
+                  <Text fill="#ffffff95" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="State" wrappingWidth="61.21630859375">
                      <font>
                         <Font name="Roboto Light" size="13.0" />
                      </font>
@@ -50,7 +52,7 @@
             </HBox>
             <HBox alignment="BOTTOM_LEFT" prefHeight="8.0" prefWidth="288.0">
                <children>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" text="Country Code" wrappingWidth="107.6875">
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Country Code" wrappingWidth="107.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
@@ -58,7 +60,7 @@
                         <Insets top="5.0" />
                      </HBox.margin>
                   </Text>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" text="GMT Offset" wrappingWidth="98.6875">
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="GMT Offset" wrappingWidth="98.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
@@ -101,7 +103,7 @@
             </HBox>
             <HBox alignment="BOTTOM_LEFT" prefHeight="8.0" prefWidth="288.0">
                <children>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" text="Latitude" wrappingWidth="109.6875">
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Latitude" wrappingWidth="109.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
@@ -109,7 +111,7 @@
                         <Insets top="5.0" />
                      </HBox.margin>
                   </Text>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" text="Longitude" wrappingWidth="90.6875">
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Longitude" wrappingWidth="90.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
@@ -159,12 +161,53 @@
                   </AnchorPane>
                </children>
             </HBox>
-            <VBox prefHeight="122.0" prefWidth="281.0">
+            <HBox nodeOrientation="LEFT_TO_RIGHT">
+               <children>
+                  <Button fx:id="saveLocationButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#handleSaveLocationAction" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" prefHeight="25.0" prefWidth="103.0" styleClass="save-location-button" text="Save" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="1.0" right="2.0" top="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="BOTTOM_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-label-text" text="World Clock Locations" />
+               </children>
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
-            </VBox>
+               <padding>
+                  <Insets bottom="4.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="155.0" prefWidth="281.0" spacing="5.0">
+               <children>
+                  <ListView fx:id="locationsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="127.0" prefWidth="256.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </ListView>
+                  <VBox alignment="CENTER" maxHeight="200.0" minHeight="-Infinity" prefHeight="200.0" spacing="15.0">
+                     <children>
+                        <Button fx:id="addLocationButton" mnemonicParsing="false" onAction="#handleAddLocationAction" styleClass="add-location-button" text="Add" />
+                        <Button fx:id="deleteLocationButton" mnemonicParsing="false" onAction="#handleDeleteLocationAction" styleClass="delete-location-button" text="Delete" />
+                        <Button fx:id="moveLocationUpButton" mnemonicParsing="false" onAction="#handleMoveUpLocationAction" styleClass="move-up-button" text="MoveUp" />
+                        <Button fx:id="moveLocationDownButton" mnemonicParsing="false" onAction="#handleMoveDownLocationAction" styleClass="move-down-button" text="MoveDown" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="5.0" />
+               </padding>
+            </HBox>
          </children>
       </VBox>
    </children>
+   <stylesheets>
+      <URL value="@styles.css" />
+      <URL value="@config-locations.css" />
+   </stylesheets>
 </AnchorPane>

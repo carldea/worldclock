@@ -25,10 +25,9 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static com.carlfx.worldclock.WorldClockEvent.*;
 
 /**
  * JavaFX World Clock
@@ -50,7 +49,7 @@ public class App extends Application {
     };
 
     public static String configFile = "worldclock-config.properties";
-
+    public static VBox clockList;
     @Override
     public void init() throws Exception {
         super.init();
@@ -83,10 +82,10 @@ public class App extends Application {
 
         // fake data
         locations.addAll(
-                new USLocation("GMT-5", "Pasadena, MD", "US", 32.0f, Location.TEMP_STD.FAHRENHEIT),
-                new USLocation("GMT-8", "Sunnyvale, CA", "US", 60.0f, Location.TEMP_STD.FAHRENHEIT),
-                new Location("GMT+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS),
-                new Location("GMT+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
+                new USLocation("GMT-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
+                //new USLocation("GMT-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
+                new Location("GMT+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) //,
+//                new Location("GMT+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
         );
 
         SimpleLongProperty epochTime = new SimpleLongProperty(new Date().getTime());
@@ -108,7 +107,7 @@ public class App extends Application {
         windowContainer.addEventHandler(WorldClockEvent.MAIN_APP_CLOSE, event -> stage.close());
 
         windowContainer.getStyleClass().add("window-container");
-        VBox clockList = new VBox();
+        clockList = new VBox();
         Parent windowBar = loadWindowControlsFXML(locations);
         BorderPane.setAlignment(windowBar, Pos.CENTER_RIGHT);
         windowContainer.setTop(windowBar);
@@ -127,7 +126,8 @@ public class App extends Application {
         clockList.getChildren()
                 .addAll(clocks);
 
-        windowContainer.addEventHandler(WorldClockEvent.CONFIG_SHOWING, event -> {
+        // Animate toggle between Config view vs World Clock List view
+        windowContainer.addEventHandler(CONFIG_SHOWING, event -> {
             TranslateTransition moveList = new TranslateTransition();
             moveList.setNode(clockList);
             moveList.setDuration(Duration.millis(400));
@@ -167,6 +167,51 @@ public class App extends Application {
             moveList.playFromStart();
         });
 
+        // Subscribe to a new Location Added event
+        windowContainer.addEventHandler(LOCATION_ADD, event -> {
+            Location location = event.getPayload();
+            System.out.println("addding location please");
+            Iterator<Node> itr = clockList.getChildren().iterator();
+            int idx = -1;
+            boolean found = false;
+            while (itr.hasNext()) {
+                Location loc = (Location) itr.next().getUserData();
+                idx+=1;
+                if (loc.equals(location)) {
+                    found = true;
+                    break;
+                }
+            }
+
+
+            try {
+                if (found && clockList.getChildren().size()-1 > 0) {
+                    // replace with new location
+                    clockList.getChildren().set(idx, loadClockFXML(location, epochTime));
+                } else {
+                    clockList.getChildren().add(loadClockFXML(location, epochTime));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Subscribe to a removed Location event
+        windowContainer.addEventFilter(LOCATION_REMOVE, event -> {
+            Location location = event.getPayload();
+            System.out.println("window container location_remove heard!");
+
+            Iterator<Node> itr = clockList.getChildren().iterator();
+            while (itr.hasNext()) {
+                Location loc = (Location) itr.next().getUserData();
+                if (loc.equals(location)) {
+                    itr.remove();
+                }
+            }
+
+            //WorldClockEvent.trigger(clockList, event);
+            System.out.println("broadcast out to children");
+        });
         windowContainer.setBottom(mapImage);
         scene = new Scene(windowContainer);
         scene.getStylesheets()
@@ -213,6 +258,7 @@ public class App extends Application {
     private static Parent loadClockFXML(Location location, LongProperty epochTime) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("clock-widget.fxml"));
         Parent parent = fxmlLoader.load();
+        parent.setUserData(location);
         WorldClockController controller = fxmlLoader.getController();
         controller.init(location, epochTime);
         return parent;
@@ -228,7 +274,7 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
         Parent parent = fxmlLoader.load();
         ConfigLocationsController controller = fxmlLoader.getController();
-        controller.init(locations);
+        controller.init();
         return parent;
     }
 

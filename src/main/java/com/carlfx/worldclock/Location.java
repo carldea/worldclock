@@ -8,7 +8,7 @@ public class Location {
     private String city;
     private String country;
     private String countryCode;
-    private double[] latLong = new double[2];
+    private double[] latLong = null;
     private Image weatherImage;
     private float temperature;
     private TEMP_STD tempType;
@@ -66,6 +66,18 @@ public class Location {
         this.tempType = tempType;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        return getFullLocationName().equals( ((Location) other).getFullLocationName());
+    }
+
+    public String getFullLocationName() {
+        return getCity() + ", " + getCountryCode();
+    }
+
     public String getClockTime() {
         return clockTime;
     }
@@ -114,6 +126,12 @@ public class Location {
         if (latLong == null || latLong.length != 2) {
             throw new IllegalArgumentException("Latitude and Longitude is a two element array of type double.");
         }
+        this.latLong = latLong;
+    }
+    public void setLatLong(String lat, String lon) {
+        double[] latLong = new double[2];
+        latLong[0]= Double.parseDouble(lat);
+        latLong[1]= Double.parseDouble(lon);
         this.latLong = latLong;
     }
 

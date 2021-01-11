@@ -98,10 +98,21 @@ public class WorldClockController {
     public void init(Location location, LongProperty epochTime) {
 
         epochTime.addListener( (obs, ov, nv) -> {
-            Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(location.getTimezone()));
+            String gmtOffset = location.getTimezone();
+            if (gmtOffset.indexOf("GMT") > -1) {
+                gmtOffset = gmtOffset.substring(3);
+            }
+            gmtOffset = "GMT%+d".formatted(Integer.parseInt(gmtOffset));
+            Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(gmtOffset));
+
             newCalendar.setTime(new Date(nv.longValue()));
             SimpleDateFormat timeDisplay = new SimpleDateFormat("h:mm");
-            timeDisplay.setTimeZone(TimeZone.getTimeZone(location.getTimezone()));
+
+            timeDisplay.setTimeZone(TimeZone.getTimeZone(gmtOffset));
+//            System.out.println(gmtOffset + " " +
+//                    location.getFullLocationName() + " " +
+//                    newCalendar.getTimeZone() +
+//                    " time " + timeDisplay.format(newCalendar.getTime()));
 
             int hour = newCalendar.get(Calendar.HOUR) > 12 ? newCalendar.get(Calendar.HOUR)-12 : newCalendar.get(Calendar.HOUR); // 0-23
             hour = hour == 0 ? 12 : hour;
