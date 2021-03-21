@@ -183,10 +183,10 @@
 
    -fx-background-color: "#2fdae0ce", black;
    -fx-background-insets: 0 0 0 0, 1 1 1 1;
-   /*-fx-color: "#2fdae0ce";*/ /* text color*/
    -fx-border-color: "#2fdae0ce";
    -fx-border-width: 1px;
 }
+
 .save-location-button:hover {
    -fx-text-fill: "#ffffffff";
 
@@ -197,10 +197,8 @@
 }
 .save-location-button:armed {
    -fx-text-fill: "#202020";
-
    -fx-background-color: "#2fdae0", black, "#2fdae0";
    -fx-background-insets: 0 0 0 0, 1 1 1 1, 4 2 2 4;
-   /*-fx-color: "#2fdae0ce";*/ /* text color*/
    -fx-border-color: "#2fdae0ce";
    -fx-border-width: 1px;
 }

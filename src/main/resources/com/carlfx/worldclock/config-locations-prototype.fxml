@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="412.0" prefWidth="314.0" styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.ConfigLocationsController">
+   <children>
+      <Text fill="WHITE" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-label-text" text="Locations Configurations" wrappingWidth="177.21630859375">
+         <font>
+            <Font name="Roboto Medium" size="13.0" />
+         </font>
+      </Text>
+      <VBox layoutX="14.0" layoutY="42.0" prefHeight="172.0" prefWidth="281.0">
+         <children>
+            <HBox alignment="BOTTOM_LEFT">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="City" wrappingWidth="214.6875">
+                     <font>
+                        <Font name="Roboto" size="12.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#ffffff95" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="State" wrappingWidth="61.21630859375">
+                     <font>
+                        <Font name="Roboto Light" size="13.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <HBox prefHeight="33.0" prefWidth="288.0" spacing="5.0">
+               <children>
+                  <TextField fx:id="city" prefHeight="23.0" prefWidth="212.0">
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="config-text-fields" />
+                        <String fx:value="text-input" />
+                     </styleClass></TextField>
+                  <ComboBox fx:id="usStates" prefHeight="27.0" prefWidth="69.0" visibleRowCount="5" />
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_LEFT" prefHeight="8.0" prefWidth="288.0">
+               <children>
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Country Code" wrappingWidth="107.6875">
+                     <font>
+                        <Font name="Roboto" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </Text>
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="GMT Offset" wrappingWidth="98.6875">
+                     <font>
+                        <Font name="Roboto" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </Text>
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="281.0" spacing="5.0">
+               <children>
+                  <TextField fx:id="countryCode" prefHeight="23.0" prefWidth="104.0">
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="config-text-fields" />
+                        <String fx:value="text-input" />
+                     </styleClass>
+                  </TextField>
+                  <AnchorPane>
+                     <children>
+                        <TextField fx:id="gmtOffset" prefHeight="23.0" prefWidth="104.0">
+                           <font>
+                              <Font name="Roboto" size="13.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="config-text-fields" />
+                              <String fx:value="text-input" />
+                           </styleClass>
+                        </TextField>
+                        <Button fx:id="gmtErrorOverlayIcon" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="86.0" layoutY="6.0" mnemonicParsing="false" styleClass="error-overlay" text="Button">
+                           <tooltip>
+                              <Tooltip text="Must be from -12 through 0 (GMT) to +12" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_LEFT" prefHeight="8.0" prefWidth="288.0">
+               <children>
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Latitude" wrappingWidth="109.6875">
+                     <font>
+                        <Font name="Roboto" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </Text>
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Longitude" wrappingWidth="90.6875">
+                     <font>
+                        <Font name="Roboto" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </Text>
+               </children>
+            </HBox>
+            <HBox prefHeight="33.0" prefWidth="288.0" spacing="5.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <TextField fx:id="latitude" prefHeight="23.0" prefWidth="104.0">
+                           <font>
+                              <Font name="Roboto" size="13.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="config-text-fields" />
+                              <String fx:value="text-input" />
+                           </styleClass>
+                        </TextField>
+                        <Button fx:id="latitudeErrorOverlayIcon" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="86.0" layoutY="6.0" mnemonicParsing="false" styleClass="error-overlay" text="lat-error-overlay">
+                           <tooltip>
+                              <Tooltip text="Must be from -90 through 0 (Degrees) to +90" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane>
+                     <children>
+                        <TextField fx:id="longitude" prefHeight="23.0" prefWidth="104.0">
+                           <font>
+                              <Font name="Roboto" size="13.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="config-text-fields" />
+                              <String fx:value="text-input" />
+                           </styleClass>
+                        </TextField>
+                        <Button fx:id="longitudeErrorOverlayIcon" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="86.0" layoutY="6.0" mnemonicParsing="false" styleClass="error-overlay" text="lon-error-overlay">
+                           <tooltip>
+                              <Tooltip text="Must be from -180 through 0 (Degrees) to +180" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <HBox nodeOrientation="LEFT_TO_RIGHT">
+               <children>
+                  <Button fx:id="saveLocationButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#handleSaveLocationAction" onMouseEntered="#handleEnterIngnoreAction" onMouseExited="#handleExitIngnoreAction" prefHeight="25.0" prefWidth="103.0" styleClass="save-location-button" text="Save" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="1.0" right="2.0" top="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="BOTTOM_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-label-text" text="World Clock Locations" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets bottom="4.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="155.0" prefWidth="281.0" spacing="5.0">
+               <children>
+                  <ListView fx:id="locationsListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="127.0" prefWidth="256.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </ListView>
+                  <VBox alignment="CENTER" maxHeight="200.0" minHeight="-Infinity" prefHeight="200.0" spacing="15.0">
+                     <children>
+                        <Button fx:id="addLocationButton" mnemonicParsing="false" onAction="#handleAddLocationAction" styleClass="add-location-button" text="Add" />
+                        <Button fx:id="deleteLocationButton" mnemonicParsing="false" onAction="#handleDeleteLocationAction" styleClass="delete-location-button" text="Delete" />
+                        <Button fx:id="moveLocationUpButton" mnemonicParsing="false" onAction="#handleMoveUpLocationAction" styleClass="move-up-button" text="MoveUp" />
+                        <Button fx:id="moveLocationDownButton" mnemonicParsing="false" onAction="#handleMoveDownLocationAction" styleClass="move-down-button" text="MoveDown" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="5.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

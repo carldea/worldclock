@@ -82,10 +82,10 @@ public class App extends Application {
 
         // fake data
         locations.addAll(
-                new USLocation("GMT-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
-                //new USLocation("GMT-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
-                new Location("GMT+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) //,
-//                new Location("GMT+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
+                new USLocation("-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
+                new USLocation("-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
+                new Location("+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) ,
+                new Location("+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
         );
 
         SimpleLongProperty epochTime = new SimpleLongProperty(new Date().getTime());
@@ -97,6 +97,7 @@ public class App extends Application {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 
+        // load each location clock face
         List<Parent> clocks = new ArrayList<>();
         for(Location location:locations) {
             // each controller will attach a listener when epochTime changes.
@@ -106,12 +107,14 @@ public class App extends Application {
         windowContainer.getStyleClass().add("clock-background");
         windowContainer.addEventHandler(WorldClockEvent.MAIN_APP_CLOSE, event -> stage.close());
 
+        // load the window title bar
         windowContainer.getStyleClass().add("window-container");
         clockList = new VBox();
         Parent windowBar = loadWindowControlsFXML(locations);
         BorderPane.setAlignment(windowBar, Pos.CENTER_RIGHT);
         windowContainer.setTop(windowBar);
 
+        // load the config form
         Pane centerPane = new Pane();
         Parent configPane = loadConfigLocationsFXML(locations);
         configPane.setVisible(false);
@@ -119,6 +122,7 @@ public class App extends Application {
 
         windowContainer.setCenter(centerPane);
         makeDraggable(windowContainer);
+
         // fake map
         ImageView mapImage = new ImageView(new Image(App.class.getResourceAsStream("Mapimage.png")));
 
@@ -274,7 +278,7 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
         Parent parent = fxmlLoader.load();
         ConfigLocationsController controller = fxmlLoader.getController();
-        controller.init();
+        controller.init(locations);
         return parent;
     }
 
