@@ -204,8 +204,8 @@ public class ConfigLocationsController {
         }
     }
 
-    public void init () {
-        locations = FXCollections.observableArrayList();
+    public void init (ObservableList<Location> xlocations) {
+        locations = FXCollections.observableArrayList(xlocations);
         locations.addListener(listChangeListener);
 
         // Populate US states combo
@@ -235,7 +235,7 @@ public class ConfigLocationsController {
               }
             };
         });
-
+        locationsListView.getItems().addAll(locations);
         addValidationRangeCheckInt(-12, 12, gmtOffset, gmtErrorOverlayIcon);
         addValidationRangeCheckDouble(-90, 90, latitude, latitudeErrorOverlayIcon);
         addValidationRangeCheckDouble(-180, 180, longitude, longitudeErrorOverlayIcon);
