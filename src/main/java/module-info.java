@@ -3,6 +3,6 @@ module worldclock {
     requires javafx.fxml;
     requires jsoniter;
 
-    opens com.carlfx.worldclock to com.jsoniter,  javafx.fxml;
+    opens com.carlfx.worldclock to jsoniter,  javafx.fxml;
     exports com.carlfx.worldclock;
 }
