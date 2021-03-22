@@ -1,5 +1,6 @@
 package com.carlfx.worldclock;
 
+import com.jsoniter.output.JsonStream;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -8,7 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConfigLocationsController {
     @FXML
@@ -54,11 +60,11 @@ public class ConfigLocationsController {
                 if (c.wasPermutated()) {
                     for (int i = c.getFrom(); i < c.getTo(); ++i) {
                         //permutate
-                        System.out.println("todo permutate items");
+                        System.out.println("todo permutate items ");
                     }
                 } else if (c.wasUpdated()) {
                     //update item
-                    System.out.println("todo update item");
+                    System.out.println("todo update item !!!!" );
                 } else {
                     for (Location rmItem : c.getRemoved()) {
                         removeListViewItem(rmItem);
@@ -66,6 +72,7 @@ public class ConfigLocationsController {
                     }
                     for (Location addItem : c.getAddedSubList()) {
                         updateListViewItem(addItem);
+                        System.out.println("should not happen yet");
                         WorldClockEvent.trigger(longitude, WorldClockEvent.LOCATION_ADD, addItem);
                     }
                 }
@@ -86,27 +93,76 @@ public class ConfigLocationsController {
 
     @FXML
     private void handleSaveLocationAction(ActionEvent actionEvent) {
-        Location location = null;
+        Location location = locationsListView.getSelectionModel().getSelectedItem();
         String stateSelected = usStates.getSelectionModel().getSelectedItem();
-        if (stateSelected != null && !"".equals(stateSelected)) {
-            location = new USLocation(gmtOffset.getText(), city.getText(), stateSelected);
-        } else {
-            location = new Location(gmtOffset.getText(), city.getText(), countryCode.getText());
+        String cityStr = "";
+        if (!city.getText().isBlank()) {
+            cityStr = city.getText();
         }
 
-        // Add Latitude and longitude
-        if (!latitude.getText().isBlank() && !longitude.getText().isBlank()) {
-            location.setLatLong(latitude.getText(), longitude.getText());
+        if (location != null) {
+            // update existing item
+            if (location instanceof USLocation) {
+                USLocation usLocation = (USLocation) location;
+                usLocation.setState(stateSelected);
+            }
+            location.setCity(cityStr);
+            locationsListView.refresh();
+            if (!latitude.getText().isBlank() && !longitude.getText().isBlank()) {
+                location.setLatLong(latitude.getText(), longitude.getText());
+            }
+
+        } else {
+
+            if (stateSelected != null && !"".equals(stateSelected)) {
+                location = new USLocation(gmtOffset.getText(), city.getText(), stateSelected);
+            } else {
+                location = new Location(gmtOffset.getText(), city.getText(), countryCode.getText());
+            }
+
+            // Add Latitude and longitude
+            if (!latitude.getText().isBlank() && !longitude.getText().isBlank()) {
+                location.setLatLong(latitude.getText(), longitude.getText());
+            }
+            if (!city.getText().isBlank()) {
+                location.setCity(cityStr);
+            }
+            locations.add(location);
         }
-        locations.add(location);
+        saveLocations();
     }
 
+    private void saveLocations() {
+        // check if file exists
+        File file = new File(System.getProperty("user.home") + File.separatorChar + "worldclock");
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File locationsJson = new File(String.format("%s%s%s%s%s",
+                System.getProperty("user.home"),
+                File.separatorChar,
+                "worldclock",
+                File.separatorChar,
+                "locations.json"));
+        try (FileWriter fileWriter = new FileWriter(locationsJson)){
+            List<Location> locationList = locationsListView.getItems().stream().collect(Collectors.toList());
+            String arrayJson = JsonStream.serialize(locationList);
+            fileWriter.write(arrayJson);
+
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleDeleteLocationAction(ActionEvent actionEvent) {
         Location location = locationsListView.getSelectionModel().getSelectedItem();
         if (location != null) {
             locations.remove(location);
         }
+        saveLocations();
     }
     @FXML
     private void handleMoveUpLocationAction(ActionEvent actionEvent) {
@@ -118,7 +174,9 @@ public class ConfigLocationsController {
             locationsListView.getItems().set(index, location);
             locationsListView.getItems().set(index + 1, prevLocation);
             locationsListView.getSelectionModel().select(index);
+            WorldClockEvent.trigger(gmtOffset, WorldClockEvent.LOCATION_MOVE_UP, new RowLocation(index, location));
         }
+        saveLocations();
     }
     @FXML
     private void handleMoveDownLocationAction(ActionEvent actionEvent) {
@@ -130,7 +188,9 @@ public class ConfigLocationsController {
             locationsListView.getItems().set(index, location);
             locationsListView.getItems().set(index - 1, nextLocation);
             locationsListView.getSelectionModel().select(index);
+            WorldClockEvent.trigger(gmtOffset, WorldClockEvent.LOCATION_MOVE_DOWN, new RowLocation(index, location));
         }
+        saveLocations();
     }
 
     private void removeListViewItem(Location location) {
@@ -143,10 +203,12 @@ public class ConfigLocationsController {
         }
 
     }
+
     private void updateListViewItem(Location updateOrAddlocation) {
         Iterator<Location> itr = locationsListView.getItems().iterator();
         int idx = -1;
         boolean found = false;
+
         while (itr.hasNext()) {
             Location loc = itr.next();
             idx+=1;

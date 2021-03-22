@@ -2,6 +2,8 @@ package com.carlfx.worldclock;
 
 import javafx.scene.image.Image;
 
+import java.util.Arrays;
+
 public class Location {
     private String clockTime;
     private String timezone;
@@ -129,6 +131,7 @@ public class Location {
         this.latLong = latLong;
     }
     public void setLatLong(String lat, String lon) {
+        if ("".equals(lat) || "".equals(lon)) return;
         double[] latLong = new double[2];
         latLong[0]= Double.parseDouble(lat);
         latLong[1]= Double.parseDouble(lon);
@@ -136,9 +139,15 @@ public class Location {
     }
 
     public double getLatitude() {
+        if (this.latLong == null || this.latLong.length > 0){
+            return 0f;
+        }
         return this.latLong[0];
     }
     public double getLongitude() {
+        if (this.latLong == null || this.latLong.length > 1){
+            return 0f;
+        }
         return this.latLong[1];
     }
 
@@ -164,5 +173,20 @@ public class Location {
 
     public void setTempType(TEMP_STD tempType) {
         this.tempType = tempType;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "clockTime='" + clockTime + '\'' +
+                ", timezone='" + timezone + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", latLong=" + Arrays.toString(latLong) +
+                ", weatherImage=" + weatherImage +
+                ", temperature=" + temperature +
+                ", tempType=" + tempType +
+                '}';
     }
 }

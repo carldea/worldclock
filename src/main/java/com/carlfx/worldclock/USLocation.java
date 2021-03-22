@@ -8,7 +8,7 @@ public class USLocation extends Location {
         this(timezone, city, stateCode, 0, TEMP_STD.CELSIUS);
     }
     public USLocation(String timezone, String city, String stateCode, float temp, TEMP_STD tempType) {
-        super(timezone, city, null, temp, tempType);
+        super(timezone, city, "US", temp, tempType);
         setState(stateCode);
     }
     @Override

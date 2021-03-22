@@ -1,5 +1,7 @@
 package com.carlfx.worldclock;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,8 +26,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.carlfx.worldclock.WorldClockEvent.*;
 
@@ -61,7 +67,7 @@ public class App extends Application {
     }
     private void loadLocations() {
         // detect if file exists?
-
+        // if file is not there then create one add a default city like home
         // if not create fake data
     }
     private void fontLoader(String fileName) {
@@ -81,12 +87,78 @@ public class App extends Application {
         this.stage = stage;
 
         // fake data
-        locations.addAll(
-                new USLocation("-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
-                new USLocation("-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
-                new Location("+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) ,
-                new Location("+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
-        );
+//        locations.addAll(
+//                new USLocation("-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
+//                new USLocation("-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
+//                new Location("+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) ,
+//                new Location("+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
+//        );
+        // check if file exists
+        File file = new File(System.getProperty("user.home") + File.separatorChar + "worldclock");
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File locationsJson = new File(String.format("%s%s%s%s%s",
+                System.getProperty("user.home"),
+                File.separatorChar,
+                "worldclock",
+                File.separatorChar,
+                "locations.json"));
+        if (locationsJson.exists()) {
+            try {
+
+                String actual = Files.readString(locationsJson.toPath());
+                if (!"".equals(actual)) {
+                    List<Any> locationList = JsonIterator.deserialize(actual).asList();
+                    locationList.stream().map(any -> {
+                        Location location = null;
+                        String timezone = any.get("timezone").toString();
+                        String city = any.get("city").toString();
+                        String countryCode = any.get("countryCode").toString();
+                        String state = any.get("state") != null ? any.get("state").toString() : "";
+                        if ("US".equalsIgnoreCase(countryCode)) {
+                            location = new USLocation(timezone, city, state);
+                        } else {
+                            location = new Location(timezone, city, countryCode);
+                        }
+                        String latitude = any.get("latitude") != null ? any.get("latitude").toString() : "";
+                        String longitude = any.get("latitude") != null ? any.get("longitude").toString() : "";
+                        if (!"".equals(latitude) && !"".equals(longitude)) {
+                            location.setLatLong(latitude, longitude);
+                        }
+                        return location;
+                    }).forEach(location -> locations.add(location));
+                }
+
+                System.out.println("Successfully read from file.");
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        if (locations.isEmpty()) {
+            TimeZone tz = TimeZone.getDefault();
+            String offsetId = "" + tz.toZoneId().getRules().getOffset(Instant.now()).getTotalSeconds()/60/60;
+
+            String city = "Home";
+            String state = "";
+
+            String countryCode = Locale.getDefault().getCountry();
+            if ("US".equalsIgnoreCase(countryCode)) {
+                USLocation usLocation = new USLocation(offsetId, city, state, 3.3f, Location.TEMP_STD.CELSIUS);
+                locations.add(usLocation);
+            } else {
+                String zoneId = tz.getID();
+                if (zoneId.lastIndexOf("/") > -1) {
+                    city = zoneId.substring(zoneId.lastIndexOf("/") + 1);
+                } else {
+                    city = zoneId;
+                }
+                locations.add(new Location(offsetId, city, countryCode, 3.3f, Location.TEMP_STD.CELSIUS));
+            }
+        }
 
         SimpleLongProperty epochTime = new SimpleLongProperty(new Date().getTime());
         // each tick update epoch property
@@ -215,6 +287,31 @@ public class App extends Application {
 
             //WorldClockEvent.trigger(clockList, event);
             System.out.println("broadcast out to children");
+        });
+
+        // Subscribe to a MOVE UP Location event
+        windowContainer.addEventFilter(LOCATION_MOVE_UP, event -> {
+            RowLocation rowLocation = event.getPayload();
+            System.out.println("window container location_move_up heard! index:" + rowLocation.getIndex() + " loc: " + rowLocation.getLocation().getFullLocationName());
+            List<Node> copyList = clockList.getChildren().stream().collect(Collectors.toList());
+            clockList.getChildren().removeAll(copyList);
+            Node prevNode = copyList.get(rowLocation.getIndex());
+            Node currentNode = copyList.get(rowLocation.getIndex() + 1);
+            copyList.set(rowLocation.getIndex(), currentNode);
+            copyList.set(rowLocation.getIndex()+1, prevNode);
+            clockList.getChildren().addAll(copyList);
+        });
+        // Subscribe to a MOVE UP Location event
+        windowContainer.addEventFilter(LOCATION_MOVE_DOWN, event -> {
+            RowLocation rowLocation = event.getPayload();
+            System.out.println("window container location_move_down heard! index:" + rowLocation.getIndex() + " loc: " + rowLocation.getLocation().getFullLocationName());
+            List<Node> copyList = clockList.getChildren().stream().collect(Collectors.toList());
+            clockList.getChildren().removeAll(copyList);
+            Node nextNode = copyList.get(rowLocation.getIndex());
+            Node currentNode = copyList.get(rowLocation.getIndex() - 1);
+            copyList.set(rowLocation.getIndex(), currentNode);
+            copyList.set(rowLocation.getIndex() - 1, nextNode);
+            clockList.getChildren().addAll(copyList);
         });
         windowContainer.setBottom(mapImage);
         scene = new Scene(windowContainer);

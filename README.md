@@ -10,10 +10,45 @@ Welcome to the World Clock application! This project is for a series of blog ent
 This is a standard Maven JavaFX modular (JPMS) application.
 
 ## Requirements:
-- Maven 3.6.3 or greater
-- Java 15+
+- Maven 3.6.3 or greater (Optional)
+- Java 16+
+- Bach (https://github.com/sormuras/bach)
 
-## Run World Clock
+## Build project using Bach
+
+`$ ./bach/bin/bach build`
+
+To simplify add to your .bashrc or .bash_profile as the following:
+
+`export PATH=$PATH:./bach/bin`
+
+Open a new terminal session to be able to run Bach build tool.
+
+On Windows you'll add to your environment variables as the following:
+
+`set PATH=%PATH%;.bach\bin`
+
+## Run World Clock as a module 
+
+`$ java --add-modules worldclock --module-path .bach/workspace/modules/ com.carlfx.worldclock.Launcher`
+
+## Run World Clock using a custom image
+
+```bash
+# Linux/MacOS
+$ .bach/workspace/image/bin/worldclock
+```
+
+```bash
+# Windows 
+$ .bach\workspace\image\bin\worldclock
+```
+
+## Build project using Maven
+
+`$ mvn package`
+
+## Run World Clock using Maven plugin
 
 `$ mvn clean javafx:run`
 

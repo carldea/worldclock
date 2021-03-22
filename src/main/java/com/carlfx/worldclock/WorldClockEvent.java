@@ -13,6 +13,8 @@ public class WorldClockEvent extends Event {
     public static final EventType<WorldClockEvent> MAIN_APP_CLOSE  = new EventType("MAIN_APP_CLOSE");
     public static final EventType<WorldClockEvent> LOCATION_ADD  = new EventType("LOCATION_ADD");
     public static final EventType<WorldClockEvent> LOCATION_REMOVE  = new EventType("LOCATION_REMOVE");
+    public static final EventType<WorldClockEvent> LOCATION_MOVE_UP  = new EventType("LOCATION_MOVE_UP");
+    public static final EventType<WorldClockEvent> LOCATION_MOVE_DOWN  = new EventType("LOCATION_MOVE_DOWN");
 
     public Object payload;
 
