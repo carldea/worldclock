@@ -30,7 +30,7 @@ On Windows you'll add to your environment variables as the following:
 
 ## Run World Clock as a module 
 
-`$ java --add-modules worldclock --module-path .bach/workspace/modules/ com.carlfx.worldclock.Launcher`
+`$ java --add-modules worldclock --module-path .bach/workspace/modules/:.bach/external-modules/ com.carlfx.worldclock.Launcher`
 
 ## Run World Clock using a custom image
 
@@ -44,11 +44,11 @@ $ .bach/workspace/image/bin/worldclock
 $ .bach\workspace\image\bin\worldclock
 ```
 
-## Build project using Maven
+## Clean project using Maven
 
-`$ mvn package`
+`$ mvn clean`
 
 ## Run World Clock using Maven plugin
 
-`$ mvn clean javafx:run`
+`$ mvn javafx:run`
 
