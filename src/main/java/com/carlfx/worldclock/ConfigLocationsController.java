@@ -1,6 +1,6 @@
 package com.carlfx.worldclock;
 
-import com.jsoniter.output.JsonStream;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ConfigLocationsController {
     @FXML
@@ -146,10 +145,9 @@ public class ConfigLocationsController {
                 File.separatorChar,
                 "locations.json"));
         try (FileWriter fileWriter = new FileWriter(locationsJson)){
-            List<Location> locationList = locationsListView.getItems().stream().collect(Collectors.toList());
-            String arrayJson = JsonStream.serialize(locationList);
-            fileWriter.write(arrayJson);
-
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Location> locationList = locationsListView.getItems();
+            objectMapper.writeValue(fileWriter, locationList);
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");

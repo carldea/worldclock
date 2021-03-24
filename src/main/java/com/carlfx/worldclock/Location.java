@@ -1,9 +1,9 @@
 package com.carlfx.worldclock;
 
-import javafx.scene.image.Image;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Arrays;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Location {
     private String clockTime;
     private String timezone;
@@ -11,7 +11,7 @@ public class Location {
     private String country;
     private String countryCode;
     private double[] latLong = null;
-    private Image weatherImage;
+    public String weatherImageUrl;
     private float temperature;
     private TEMP_STD tempType;
     /*
@@ -50,7 +50,7 @@ public class Location {
         CELSIUS,
         FAHRENHEIT
     }
-
+    public Location(){}
     public Location(String timezone, String city, String countryCode) {
         this.timezone = timezone;
         this.city = city;
@@ -125,9 +125,7 @@ public class Location {
     }
 
     public void setLatLong(double[] latLong) {
-        if (latLong == null || latLong.length != 2) {
-            throw new IllegalArgumentException("Latitude and Longitude is a two element array of type double.");
-        }
+
         this.latLong = latLong;
     }
     public void setLatLong(String lat, String lon) {
@@ -151,12 +149,12 @@ public class Location {
         return this.latLong[1];
     }
 
-    public Image getWeatherImage() {
-        return weatherImage;
+    public String getWeatherImageUrl() {
+        return weatherImageUrl;
     }
 
-    public void setWeatherImage(Image weatherImage) {
-        this.weatherImage = weatherImage;
+    public void setWeatherImageUrl(String weatherImageUrl) {
+        this.weatherImageUrl = weatherImageUrl;
     }
 
     public float getTemperature() {
@@ -184,7 +182,7 @@ public class Location {
                 ", country='" + country + '\'' +
                 ", countryCode='" + countryCode + '\'' +
                 ", latLong=" + Arrays.toString(latLong) +
-                ", weatherImage=" + weatherImage +
+                ", weatherImageUrl=" + weatherImageUrl +
                 ", temperature=" + temperature +
                 ", tempType=" + tempType +
                 '}';

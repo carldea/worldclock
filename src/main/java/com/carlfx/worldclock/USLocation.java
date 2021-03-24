@@ -1,9 +1,12 @@
 package com.carlfx.worldclock;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class USLocation extends Location {
     private String state = "";
     private String zip;
-
+    public USLocation(){}
     public USLocation(String timezone, String city, String stateCode) {
         this(timezone, city, stateCode, 0, TEMP_STD.CELSIUS);
     }

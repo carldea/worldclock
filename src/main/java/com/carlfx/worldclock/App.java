@@ -1,7 +1,6 @@
 package com.carlfx.worldclock;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.any.Any;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -107,28 +106,25 @@ public class App extends Application {
                 "locations.json"));
         if (locationsJson.exists()) {
             try {
-
                 String actual = Files.readString(locationsJson.toPath());
                 if (!"".equals(actual)) {
-                    List<Any> locationList = JsonIterator.deserialize(actual).asList();
-                    locationList.stream().map(any -> {
-                        Location location = null;
-                        String timezone = any.get("timezone").toString();
-                        String city = any.get("city").toString();
-                        String countryCode = any.get("countryCode").toString();
-                        String state = any.get("state") != null ? any.get("state").toString() : "";
-                        if ("US".equalsIgnoreCase(countryCode)) {
-                            location = new USLocation(timezone, city, state);
-                        } else {
-                            location = new Location(timezone, city, countryCode);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<Map<String, Object>> locationArray = objectMapper.readValue(actual, List.class);
+                    for (Map<String, Object> map:locationArray) {
+                        try {
+                            Location location = null;
+
+                            if (map.containsKey("state")) {
+                                location = objectMapper.convertValue(map, USLocation.class);
+                            } else {
+                                location = objectMapper.convertValue(map, Location.class);
+                            }
+                            locations.add(location);
+
+                        } catch (Throwable th) {
+                            th.printStackTrace();
                         }
-                        String latitude = any.get("latitude") != null ? any.get("latitude").toString() : "";
-                        String longitude = any.get("latitude") != null ? any.get("longitude").toString() : "";
-                        if (!"".equals(latitude) && !"".equals(longitude)) {
-                            location.setLatLong(latitude, longitude);
-                        }
-                        return location;
-                    }).forEach(location -> locations.add(location));
+                    }
                 }
 
                 System.out.println("Successfully read from file.");

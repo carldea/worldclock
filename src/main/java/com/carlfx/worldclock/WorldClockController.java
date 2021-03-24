@@ -102,6 +102,9 @@ public class WorldClockController {
             if (gmtOffset.indexOf("GMT") > -1) {
                 gmtOffset = gmtOffset.substring(3);
             }
+            if ("".equals(gmtOffset.trim())) {
+                System.out.println("gmtOffset: " + gmtOffset);
+            }
             gmtOffset = "GMT%+d".formatted(Integer.parseInt(gmtOffset));
             Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(gmtOffset));
 
