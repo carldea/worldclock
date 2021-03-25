@@ -1,19 +1,21 @@
 package com.carlfx.worldclock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConfigLocationsController {
     @FXML
@@ -343,7 +345,10 @@ public class ConfigLocationsController {
 
         });
     }
-
+    private void stopTasks(List<TimerTask> timersTasks) {
+        timersTasks.forEach(timerTask -> timerTask.cancel());
+        timersTasks.clear();
+    }
     private void populateStates() {
         if (usStates == null ) {
             System.out.println("shouldn't be null!");
@@ -355,5 +360,57 @@ public class ConfigLocationsController {
           "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH",
           "OK", "OR", "PW", "PA", "PR", "RI", "SC", "SD", "TN", "TX",
           "UT", "VI", "VA", "WA", "WV", "WI", "WY");
+        StringBuilder sb = new StringBuilder();
+        List<TimerTask> timersTasks = new CopyOnWriteArrayList<>();
+        Timer timer = new Timer();
+
+        usStates.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            // store key strokes cancel timer add to buffer
+            if (event.getText().equals(" ")) {
+                usStates.show();
+                return;
+            }
+            // if control characters just let events bubble up
+            if (event.getText().trim().isBlank()) return;
+
+            // if valid text add to buffer
+            sb.append(event.getText());
+            // kill pending scheduled
+            stopTasks(timersTasks);
+        });
+        usStates.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!"".equals(newValue)) {
+                countryCode.setText("US");
+                countryCode.setDisable(true);
+            } else {
+                countryCode.setDisable(false);
+            }
+        });
+        usStates.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getText().trim().isBlank()) return;
+            stopTasks(timersTasks);
+
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+
+                    String state = sb.toString();
+                    System.out.println("Running " + state);
+                    if ("".equals(state)) return;
+                    Platform.runLater(()->{
+                        for (String item : usStates.getItems()) {
+                            if (item.toLowerCase().startsWith(state.toLowerCase())) {
+                                usStates.setValue(item);
+                                break;
+                            }
+                        }
+                    });
+                    sb.setLength(0);
+                    stopTasks(timersTasks);
+                }
+            };
+            timersTasks.add(timerTask);
+            timer.schedule(timerTask, 300);
+        });
     }
 }
