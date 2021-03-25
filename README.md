@@ -52,3 +52,15 @@ $ .bach\workspace\image\bin\worldclock
 
 `$ mvn javafx:run`
 
+## Create a MacOS package to run allow user to install onto desktop
+
+```bash
+$ jpackage --verbose \
+      --name "JFX World Clock" \
+      --description "JavaFX World Clock Application" \
+      --vendor "Carl Dea" \
+      --runtime-image .bach/workspace/image \
+      --module worldclock/com.carlfx.worldclock.Launcher \
+      --dest .bach/workspace/package
+```
+
