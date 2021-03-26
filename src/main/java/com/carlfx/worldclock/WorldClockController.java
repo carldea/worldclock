@@ -1,11 +1,34 @@
+/*
+ * Copyright (c) 2021.
+ *
+ * This file is part of JFX World Clock.
+ *
+ *     JFX World Clock is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     JFX World Clock is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with JFX World Clock.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.carlfx.worldclock;
 
-import javafx.beans.property.LongProperty;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +37,9 @@ import java.util.TimeZone;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * A controller for the clock-widget.fxml file.
+ */
 public class WorldClockController {
 
     @FXML
@@ -95,15 +121,42 @@ public class WorldClockController {
         return pointXY;
     };
 
-    public void init(Location location, LongProperty epochTime) {
+    SimpleLongProperty epochTime = new SimpleLongProperty(new Date().getTime());
+    Timeline timeline = null;
+    ChangeListener<? super Number> secondListener;
 
-        epochTime.addListener( (obs, ov, nv) -> {
+    /**
+     * The main Application will have listeners when a clock is removed. To clean up the timers and listeners
+     * will be stopped and removed respectively.
+     */
+    public void cleanup() {
+        if (timeline != null) {
+            timeline.stop();
+            if (secondListener != null) {
+                epochTime.removeListener(secondListener);
+            }
+        }
+    }
+
+    public void init(Location location) {
+        locationRegion.setText("");
+        // each tick update epoch property
+        timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), /* every second */
+                        actionEvent -> epochTime.set(System.currentTimeMillis())) /* update epoch */
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+        secondListener = (obs, ov, nv) -> {
+            // Uncomment to test whether each clock's timeline and listeners are cleaned up.
+            //System.out.println("tick tock " + location.getFullLocationName());
             String gmtOffset = location.getTimezone();
             if (gmtOffset.indexOf("GMT") > -1) {
                 gmtOffset = gmtOffset.substring(3);
             }
             if ("".equals(gmtOffset.trim())) {
                 System.out.println("gmtOffset: " + gmtOffset);
+                gmtOffset = "0";
             }
             gmtOffset = "GMT%+d".formatted(Integer.parseInt(gmtOffset));
             Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(gmtOffset));
@@ -160,7 +213,8 @@ public class WorldClockController {
             String tempType = location.getTempType() == Location.TEMP_STD.CELSIUS ? "°C" : "°F";
             temperatureText.setText( (int)location.getTemperature() + tempType);
 
-        });
+        };
+        epochTime.addListener(secondListener);
 
     }
 }

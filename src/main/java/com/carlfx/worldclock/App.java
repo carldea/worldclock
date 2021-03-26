@@ -1,12 +1,27 @@
+/*
+ * Copyright (c) 2021.
+ *
+ * This file is part of JFX World Clock.
+ *
+ *     JFX World Clock is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     JFX World Clock is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with JFX World Clock.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.carlfx.worldclock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.animation.*;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -25,10 +40,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,20 +67,14 @@ public class App extends Application {
 
     public static String configFile = "worldclock-config.properties";
     public static VBox clockList;
+
     @Override
     public void init() throws Exception {
         super.init();
         // load fonts
         Arrays.stream(fontFiles).forEach( f -> fontLoader(f));
+    }
 
-        // load locations
-        loadLocations();
-    }
-    private void loadLocations() {
-        // detect if file exists?
-        // if file is not there then create one add a default city like home
-        // if not create fake data
-    }
     private void fontLoader(String fileName) {
         Font.loadFont(App.class.getResource(fileName).toExternalForm(), 20);
     }
@@ -76,7 +82,7 @@ public class App extends Application {
        T childNode = (T) node.lookup("#"+id);
        return childNode;
     }
-    static ObservableList<Location> locations = FXCollections.observableArrayList();
+    static ObservableList<Location> locations;
 
 
     @Override
@@ -85,92 +91,6 @@ public class App extends Application {
         stage.setOpacity(.75);
         this.stage = stage;
 
-        // fake data
-//        locations.addAll(
-//                new USLocation("-5", "Pasadena", "MD", 32.0f, Location.TEMP_STD.FAHRENHEIT) ,
-//                new USLocation("-8", "Sunnyvale", "CA", 60.0f, Location.TEMP_STD.FAHRENHEIT),
-//                new Location("+1", "Amsterdam", "NL", 4.0f, Location.TEMP_STD.CELSIUS) ,
-//                new Location("+1", "Münster", "DE",5.0f, Location.TEMP_STD.CELSIUS)
-//        );
-        // check if file exists
-        File file = new File(System.getProperty("user.home") + File.separatorChar + "worldclock");
-
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File locationsJson = new File(String.format("%s%s%s%s%s",
-                System.getProperty("user.home"),
-                File.separatorChar,
-                "worldclock",
-                File.separatorChar,
-                "locations.json"));
-        if (locationsJson.exists()) {
-            try {
-                String actual = Files.readString(locationsJson.toPath());
-                if (!"".equals(actual)) {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Object>> locationArray = objectMapper.readValue(actual, List.class);
-                    for (Map<String, Object> map:locationArray) {
-                        try {
-                            Location location = null;
-
-                            if (map.containsKey("state")) {
-                                location = objectMapper.convertValue(map, USLocation.class);
-                            } else {
-                                location = objectMapper.convertValue(map, Location.class);
-                            }
-                            locations.add(location);
-
-                        } catch (Throwable th) {
-                            th.printStackTrace();
-                        }
-                    }
-                }
-
-                System.out.println("Successfully read from file.");
-            } catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
-        }
-
-        if (locations.isEmpty()) {
-            TimeZone tz = TimeZone.getDefault();
-            String offsetId = "" + tz.toZoneId().getRules().getOffset(Instant.now()).getTotalSeconds()/60/60;
-
-            String city = "Home";
-            String state = "";
-
-            String countryCode = Locale.getDefault().getCountry();
-            if ("US".equalsIgnoreCase(countryCode)) {
-                USLocation usLocation = new USLocation(offsetId, city, state, 3.3f, Location.TEMP_STD.CELSIUS);
-                locations.add(usLocation);
-            } else {
-                String zoneId = tz.getID();
-                if (zoneId.lastIndexOf("/") > -1) {
-                    city = zoneId.substring(zoneId.lastIndexOf("/") + 1);
-                } else {
-                    city = zoneId;
-                }
-                locations.add(new Location(offsetId, city, countryCode, 3.3f, Location.TEMP_STD.CELSIUS));
-            }
-        }
-
-        SimpleLongProperty epochTime = new SimpleLongProperty(new Date().getTime());
-        // each tick update epoch property
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), /* every second */
-                actionEvent -> epochTime.set(System.currentTimeMillis())) /* update epoch */
-        );
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-
-        // load each location clock face
-        List<Parent> clocks = new ArrayList<>();
-        for(Location location:locations) {
-            // each controller will attach a listener when epochTime changes.
-            clocks.add(loadClockFXML(location, epochTime));
-        }
         BorderPane windowContainer = new BorderPane();
         windowContainer.getStyleClass().add("clock-background");
         windowContainer.addEventHandler(WorldClockEvent.MAIN_APP_CLOSE, event -> stage.close());
@@ -178,22 +98,33 @@ public class App extends Application {
         // load the window title bar
         windowContainer.getStyleClass().add("window-container");
         clockList = new VBox();
-        Parent windowBar = loadWindowControlsFXML(locations);
+        FXMLLoader titleBarControlLoader = new FXMLLoader(App.class.getResource("window-controls.fxml"));
+        Parent windowBar = titleBarControlLoader.load();
         BorderPane.setAlignment(windowBar, Pos.CENTER_RIGHT);
         windowContainer.setTop(windowBar);
 
         // load the config form
         Pane centerPane = new Pane();
-        Parent configPane = loadConfigLocationsFXML(locations);
+
+        FXMLLoader configLocationLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
+        Parent configPane = configLocationLoader.load();
+        ConfigLocationsController configController = configLocationLoader.getController();
+
+        // locations is a singleton from the config controller.
+        locations = configController.getLocations();
+
         configPane.setVisible(false);
         centerPane.getChildren().addAll(clockList, configPane);
 
         windowContainer.setCenter(centerPane);
         makeDraggable(windowContainer);
 
-        // fake map
-        ImageView mapImage = new ImageView(new Image(App.class.getResourceAsStream("Mapimage.png")));
-
+        // load each location clock face
+        List<Parent> clocks = new ArrayList<>();
+        for(Location location:locations) {
+            // each controller will attach a listener for cleanup code.
+            clocks.add(loadClockFXML(location));
+        }
         clockList.getStyleClass().add("clock-background");
         clockList.getChildren()
                 .addAll(clocks);
@@ -231,10 +162,10 @@ public class App extends Application {
                 moveConfig.setFromX(-clockList.getWidth() + clockList.getPadding().getLeft() + clockList.getPadding().getRight());
                 moveConfig.setToX(0);
             }
-            System.out.println("clock list  width " + clockList.getWidth());
-            System.out.println("config pane width " + configPane.getBoundsInParent().getWidth());
-            System.out.println("window bar  width " + windowBar.getBoundsInParent().getWidth());
-            System.out.println(" image      width " + mapImage.getBoundsInParent().getWidth());
+//            System.out.println("clock list  width " + clockList.getWidth());
+//            System.out.println("config pane width " + configPane.getBoundsInParent().getWidth());
+//            System.out.println("window bar  width " + windowBar.getBoundsInParent().getWidth());
+//            System.out.println(" image      width " + mapImage.getBoundsInParent().getWidth());
             moveConfig.playFromStart();
             moveList.playFromStart();
         });
@@ -257,11 +188,13 @@ public class App extends Application {
 
 
             try {
+                Parent oneClockView = loadClockFXML(location);
+
                 if (found && clockList.getChildren().size()-1 > 0) {
                     // replace with new location
-                    clockList.getChildren().set(idx, loadClockFXML(location, epochTime));
+                    clockList.getChildren().set(idx, oneClockView);
                 } else {
-                    clockList.getChildren().add(loadClockFXML(location, epochTime));
+                    clockList.getChildren().add(oneClockView);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -275,9 +208,12 @@ public class App extends Application {
 
             Iterator<Node> itr = clockList.getChildren().iterator();
             while (itr.hasNext()) {
-                Location loc = (Location) itr.next().getUserData();
+                Node oneClockView = itr.next();
+                Location loc = (Location) oneClockView.getUserData();
                 if (loc.equals(location)) {
+                    oneClockView.fireEvent(new WorldClockEvent(CLEANUP_CLOCK, "Clean up"));
                     itr.remove();
+                    break;
                 }
             }
 
@@ -297,6 +233,7 @@ public class App extends Application {
             copyList.set(rowLocation.getIndex()+1, prevNode);
             clockList.getChildren().addAll(copyList);
         });
+
         // Subscribe to a MOVE UP Location event
         windowContainer.addEventFilter(LOCATION_MOVE_DOWN, event -> {
             RowLocation rowLocation = event.getPayload();
@@ -309,6 +246,9 @@ public class App extends Application {
             copyList.set(rowLocation.getIndex() - 1, nextNode);
             clockList.getChildren().addAll(copyList);
         });
+
+        // fake map
+        ImageView mapImage = new ImageView(new Image(App.class.getResourceAsStream("Mapimage.png")));
         windowContainer.setBottom(mapImage);
         scene = new Scene(windowContainer);
         scene.getStylesheets()
@@ -352,28 +292,19 @@ public class App extends Application {
         });
     }
 
-    private static Parent loadClockFXML(Location location, LongProperty epochTime) throws IOException {
+    private Parent loadClockFXML(Location location) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("clock-widget.fxml"));
         Parent parent = fxmlLoader.load();
+
         parent.setUserData(location);
         WorldClockController controller = fxmlLoader.getController();
-        controller.init(location, epochTime);
+        parent.addEventHandler(CLEANUP_CLOCK, event -> {
+            controller.cleanup();
+        });
+        controller.init(location);
         return parent;
     }
-    private static Parent loadWindowControlsFXML(ObservableList<Location> locations) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("window-controls.fxml"));
-        Parent parent = fxmlLoader.load();
-        WindowController controller = fxmlLoader.getController();
-        controller.init(locations);
-        return parent;
-    }
-    private static Parent loadConfigLocationsFXML(ObservableList<Location> locations) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
-        Parent parent = fxmlLoader.load();
-        ConfigLocationsController controller = fxmlLoader.getController();
-        controller.init(locations);
-        return parent;
-    }
+
 
     @Override
     public void stop() {

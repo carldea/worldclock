@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2021.
+ *
+ * This file is part of JFX World Clock.
+ *
+ *     JFX World Clock is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     JFX World Clock is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with JFX World Clock.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.carlfx.worldclock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +32,14 @@ import javafx.scene.input.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * The controller code for the config-locations.fxml file.
+ */
 public class ConfigLocationsController {
     @FXML
     public ComboBox<String> usStates;
@@ -266,8 +289,78 @@ public class ConfigLocationsController {
         }
     }
 
-    public void init (ObservableList<Location> xlocations) {
-        locations = FXCollections.observableArrayList(xlocations);
+    public ObservableList<Location> getLocations() {
+        return locations;
+    }
+    @FXML
+    public void initialize () {
+
+        locations = FXCollections.observableArrayList();
+
+        // check if file exists
+        File file = new File(System.getProperty("user.home") + File.separatorChar + "worldclock");
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File locationsJson = new File(String.format("%s%s%s%s%s",
+                System.getProperty("user.home"),
+                File.separatorChar,
+                "worldclock",
+                File.separatorChar,
+                "locations.json"));
+        if (locationsJson.exists()) {
+            try {
+                String actual = Files.readString(locationsJson.toPath());
+                if (!"".equals(actual)) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<Map<String, Object>> locationArray = objectMapper.readValue(actual, List.class);
+                    for (Map<String, Object> map:locationArray) {
+                        try {
+                            Location location = null;
+
+                            if (map.containsKey("state")) {
+                                location = objectMapper.convertValue(map, USLocation.class);
+                            } else {
+                                location = objectMapper.convertValue(map, Location.class);
+                            }
+                            locations.add(location);
+
+                        } catch (Throwable th) {
+                            th.printStackTrace();
+                        }
+                    }
+                }
+
+                System.out.println("Successfully read from file.");
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        if (locations.isEmpty()) {
+            TimeZone tz = TimeZone.getDefault();
+            String offsetId = "" + tz.toZoneId().getRules().getOffset(Instant.now()).getTotalSeconds()/60/60;
+
+            String city = "Home";
+            String state = "";
+
+            String countryCode = Locale.getDefault().getCountry();
+            if ("US".equalsIgnoreCase(countryCode)) {
+                USLocation usLocation = new USLocation(offsetId, city, state, 3.3f, Location.TEMP_STD.CELSIUS);
+                locations.add(usLocation);
+            } else {
+                String zoneId = tz.getID();
+                if (zoneId.lastIndexOf("/") > -1) {
+                    city = zoneId.substring(zoneId.lastIndexOf("/") + 1);
+                } else {
+                    city = zoneId;
+                }
+                locations.add(new Location(offsetId, city, countryCode, 3.3f, Location.TEMP_STD.CELSIUS));
+            }
+        }
+
         locations.addListener(listChangeListener);
 
         // Populate US states combo
