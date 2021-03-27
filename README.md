@@ -16,11 +16,11 @@ This is a standard Maven JavaFX modular (JPMS) application.
 
 ## Build project using Bach
 
-`$ ./bach/bin/bach build`
+`$ .bach/bin/bach build`
 
 To simplify add to your .bashrc or .bash_profile as the following:
 
-`export PATH=$PATH:./bach/bin`
+`export PATH=$PATH:.bach/bin`
 
 Open a new terminal session to be able to run Bach build tool.
 
