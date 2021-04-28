@@ -31,6 +31,9 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -155,7 +158,6 @@ public class WorldClockController {
                 gmtOffset = gmtOffset.substring(3);
             }
             if ("".equals(gmtOffset.trim())) {
-                System.out.println("gmtOffset: " + gmtOffset);
                 gmtOffset = "0";
             }
             gmtOffset = "GMT%+d".formatted(Integer.parseInt(gmtOffset));
@@ -202,13 +204,13 @@ public class WorldClockController {
 
             locationRegion.setText(location.getCity() + " " + location.getCountryCode());
 
-            SimpleDateFormat dayLongformat = new SimpleDateFormat("EEEE");
-            dayLongformat.setTimeZone(TimeZone.getTimeZone(location.getTimezone()));
-            day.setText(dayLongformat.format(newCalendar.getTime()));
+            DateTimeFormatter dayLongformat = DateTimeFormatter.ofPattern("EEEE");
+            String dayString = dayLongformat.format(ZonedDateTime.now(ZoneId.of(location.getTimezone()) ) );
+            day.setText(dayString);
 
-            SimpleDateFormat monthLongformat = new SimpleDateFormat("MMMM d");
-            monthLongformat.setTimeZone(TimeZone.getTimeZone(location.getTimezone()));
-            monthDate.setText(monthLongformat.format(newCalendar.getTime()));
+            DateTimeFormatter monthLongformat = DateTimeFormatter.ofPattern("MMMM d");
+            String monthDateString = monthLongformat.format(ZonedDateTime.now(ZoneId.of(location.getTimezone()) ) );
+            monthDate.setText(monthDateString);
 
             String tempType = location.getTempType() == Location.TEMP_STD.CELSIUS ? "°C" : "°F";
             temperatureText.setText( (int)location.getTemperature() + tempType);

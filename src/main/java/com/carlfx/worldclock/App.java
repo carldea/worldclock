@@ -23,26 +23,29 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.carlfx.worldclock.WorldClockEvent.*;
 
@@ -54,7 +57,6 @@ import static com.carlfx.worldclock.WorldClockEvent.*;
  */
 public class App extends Application {
 
-    private static Scene scene;
     private static Stage stage;
     String [] fontFiles = {
             "Roboto-Regular.ttf",
@@ -65,23 +67,20 @@ public class App extends Application {
             "RobotoMono-Medium.ttf"
     };
 
-    public static String configFile = "worldclock-config.properties";
+    private final static String LCD_FONT_PROP = "prism.lcdtext";
     public static VBox clockList;
 
     @Override
     public void init() throws Exception {
         super.init();
         // load fonts
-        Arrays.stream(fontFiles).forEach( f -> fontLoader(f));
+        Arrays.stream(fontFiles).forEach(this::fontLoader);
     }
 
     private void fontLoader(String fileName) {
-        Font.loadFont(App.class.getResource(fileName).toExternalForm(), 20);
+        Font.loadFont(Objects.requireNonNull(App.class.getResource(fileName)).toExternalForm(), 20);
     }
-    private <T> T lookup(Node node, String id) {
-       T childNode = (T) node.lookup("#"+id);
-       return childNode;
-    }
+
     static ObservableList<Location> locations;
 
 
@@ -89,7 +88,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setOpacity(.75);
-        this.stage = stage;
+        App.stage = stage;
 
         BorderPane windowContainer = new BorderPane();
         windowContainer.getStyleClass().add("clock-background");
@@ -114,34 +113,66 @@ public class App extends Application {
         locations = configController.getLocations();
 
         configPane.setVisible(false);
-        centerPane.getChildren().addAll(clockList, configPane);
+        ScrollPane scrollPane = new ScrollPane(clockList);
+        scrollPane.getStyleClass().add("clock-background");
 
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        centerPane.getChildren().addAll(scrollPane, configPane);
+
+        scrollPane.prefHeightProperty().bind(centerPane.heightProperty());
+        //makeDraggable(scrollPane);
         windowContainer.setCenter(centerPane);
         makeDraggable(windowContainer);
 
+        WebView webView = createMap();
         // load each location clock face
         List<Parent> clocks = new ArrayList<>();
+        final WebEngine webEngine = webView.getEngine();
+        webEngine.setJavaScriptEnabled(true);
+        webEngine.setOnAlert(webEvent -> {
+            System.out.println(webEvent);
+            System.out.println(webEvent.getData());
+        });
+        webEngine.getLoadWorker()
+                .stateProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue == Worker.State.SUCCEEDED) {
+                        for(Location location:locations) {
+                          webEngine.executeScript(String.format("addMarker(\"%s\", %3.8f, %3.8f)",
+                            location.getCity(), location.getLatitude(), location.getLongitude()));
+                        }
+                        centerPane.setPrefHeight(configPane.getBoundsInLocal().getHeight());
+                        System.out.println("config size " +  configPane.getBoundsInLocal().getHeight());
+                        System.out.println("clockList one clock height " + clockList.getChildren().get(0).getBoundsInLocal().getHeight());
+                        System.out.println("clockList width " + clockList.getWidth());
+                        System.out.println("config width " + configPane.getBoundsInLocal().getWidth());
+                    }
+                }
+        );
+
         for(Location location:locations) {
             // each controller will attach a listener for cleanup code.
-            clocks.add(loadClockFXML(location));
+            clocks.add(createOneClock(webEngine, location));
         }
         clockList.getStyleClass().add("clock-background");
         clockList.getChildren()
                 .addAll(clocks);
+        scrollPane.getStyleClass().add("clock-background");
 
         // Animate toggle between Config view vs World Clock List view
         windowContainer.addEventHandler(CONFIG_SHOWING, event -> {
             TranslateTransition moveList = new TranslateTransition();
-            moveList.setNode(clockList);
+            moveList.setNode(scrollPane);
             moveList.setDuration(Duration.millis(400));
             WindowController windowController = event.getPayload();
             if (windowController.isConfigShowing()) {
                 moveList.setInterpolator(Interpolator.EASE_OUT);
                 moveList.setFromX(0);
-                moveList.setToX(-clockList.getWidth());
+                moveList.setToX(-scrollPane.getWidth());
             } else {
                 moveList.setInterpolator(Interpolator.EASE_IN);
-                moveList.setFromX(-clockList.getWidth());
+                moveList.setFromX(-scrollPane.getWidth());
                 moveList.setToX(0);
             }
 
@@ -151,15 +182,15 @@ public class App extends Application {
 
             moveConfig.setDuration(Duration.millis(400));
             if (!windowController.isConfigShowing()) {
-                clockList.toFront();
+                scrollPane.toFront();
                 moveConfig.setInterpolator(Interpolator.EASE_OUT);
                 moveConfig.setFromX(0);
-                moveConfig.setToX(-clockList.getWidth() + clockList.getPadding().getLeft() + clockList.getPadding().getRight());
+                moveConfig.setToX(-scrollPane.getWidth() + scrollPane.getPadding().getLeft() + scrollPane.getPadding().getRight());
             } else {
                 configPane.setVisible(true);
                 configPane.toFront();
                 moveConfig.setInterpolator(Interpolator.EASE_IN);
-                moveConfig.setFromX(-clockList.getWidth() + clockList.getPadding().getLeft() + clockList.getPadding().getRight());
+                moveConfig.setFromX(-scrollPane.getWidth() + scrollPane.getPadding().getLeft() + scrollPane.getPadding().getRight());
                 moveConfig.setToX(0);
             }
 //            System.out.println("clock list  width " + clockList.getWidth());
@@ -173,7 +204,11 @@ public class App extends Application {
         // Subscribe to a new Location Added event
         windowContainer.addEventHandler(LOCATION_ADD, event -> {
             Location location = event.getPayload();
-            System.out.println("addding location please");
+            // Add a map marker
+            webEngine.executeScript(String.format("addMarker(\"%s\", %3.8f, %3.8f)",
+                    location.getCity(), location.getLatitude(), location.getLongitude()));
+
+            // Make VBox visual rows(HBox) are in the same order.
             Iterator<Node> itr = clockList.getChildren().iterator();
             int idx = -1;
             boolean found = false;
@@ -188,7 +223,7 @@ public class App extends Application {
 
 
             try {
-                Parent oneClockView = loadClockFXML(location);
+                Parent oneClockView = createOneClock(webEngine, location);
 
                 if (found && clockList.getChildren().size()-1 > 0) {
                     // replace with new location
@@ -218,14 +253,14 @@ public class App extends Application {
             }
 
             //WorldClockEvent.trigger(clockList, event);
-            System.out.println("broadcast out to children");
+            //System.out.println("broadcast out to children");
         });
 
         // Subscribe to a MOVE UP Location event
         windowContainer.addEventFilter(LOCATION_MOVE_UP, event -> {
             RowLocation rowLocation = event.getPayload();
             System.out.println("window container location_move_up heard! index:" + rowLocation.getIndex() + " loc: " + rowLocation.getLocation().getFullLocationName());
-            List<Node> copyList = clockList.getChildren().stream().collect(Collectors.toList());
+            List<Node> copyList = new ArrayList<>(clockList.getChildren());
             clockList.getChildren().removeAll(copyList);
             Node prevNode = copyList.get(rowLocation.getIndex());
             Node currentNode = copyList.get(rowLocation.getIndex() + 1);
@@ -238,7 +273,7 @@ public class App extends Application {
         windowContainer.addEventFilter(LOCATION_MOVE_DOWN, event -> {
             RowLocation rowLocation = event.getPayload();
             System.out.println("window container location_move_down heard! index:" + rowLocation.getIndex() + " loc: " + rowLocation.getLocation().getFullLocationName());
-            List<Node> copyList = clockList.getChildren().stream().collect(Collectors.toList());
+            List<Node> copyList = new ArrayList<>(clockList.getChildren());
             clockList.getChildren().removeAll(copyList);
             Node nextNode = copyList.get(rowLocation.getIndex());
             Node currentNode = copyList.get(rowLocation.getIndex() - 1);
@@ -247,18 +282,78 @@ public class App extends Application {
             clockList.getChildren().addAll(copyList);
         });
 
-        // fake map
-        ImageView mapImage = new ImageView(new Image(App.class.getResourceAsStream("Mapimage.png")));
-        windowContainer.setBottom(mapImage);
-        scene = new Scene(windowContainer);
+        windowContainer.setBottom(webView);
+        Scene scene = new Scene(windowContainer);
         scene.getStylesheets()
-             .add(getClass()
-             .getResource("styles.css")
+             .add(Objects.requireNonNull(getClass()
+                     .getResource("styles.css"))
              .toExternalForm());
         
         scene.setFill(null);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private Parent createOneClock(WebEngine webEngine, Location location) throws IOException {
+        Parent oneClockView = loadClockFXML(location);
+        oneClockView.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getClickCount() == 2) {
+                String jsCall = String.format("viewMapLocation(%3.8f, %3.8f)", location.getLatitude(), location.getLongitude());
+                System.out.println(jsCall);
+                webEngine.executeScript(jsCall);
+                System.out.println(location);
+            }
+        });
+        return oneClockView;
+    }
+
+    private Optional<Node> grabScrollBar(ScrollPane scrollPane, Orientation orientation) {
+        for (Node node : scrollPane.lookupAll(".scroll-bar") ) {
+            System.out.println(String.join(",", node.getStyleClass()));
+            if (node instanceof ScrollBar scrollBar) {
+                if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
+                    // Do something with the horizontal scroll bar
+                    if (orientation == Orientation.HORIZONTAL) {
+                        return Optional.of(scrollBar);
+                    }
+                }
+                if (scrollBar.getOrientation() == Orientation.VERTICAL) {
+                    if (orientation == Orientation.VERTICAL) {
+                        return Optional.of(scrollBar);
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * A simple WebView containing a web page.
+     * @return
+     */
+    private WebView createMap() {
+        WebView webView = new WebView();
+        webView.setPrefWidth(310);
+        webView.setPrefHeight(310);
+        WebEngine webEngine = webView.getEngine();
+        // Enable Javascript.
+        webEngine.setJavaScriptEnabled(true);
+        webEngine.getLoadWorker().stateProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    if (newValue == Worker.State.SUCCEEDED) {
+                        System.out.println("index.html loaded successfully");
+                    } else {
+                        System.out.println("WebEngine state " + newValue);
+                    }
+                }
+        );
+
+        webEngine.load(Objects.requireNonNull(getClass().getResource("index.html")).toExternalForm());
+        webView.requestFocus();
+
+        return webView;
     }
 
     public static class DragContext {
@@ -287,9 +382,7 @@ public class App extends Application {
             }
         });
 
-        node.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEvent -> {
-            dragContext.previousLocation = new Point2D(stage.getX(), stage.getY());
-        });
+        node.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEvent -> dragContext.previousLocation = new Point2D(stage.getX(), stage.getY()));
     }
 
     private Parent loadClockFXML(Location location) throws IOException {
@@ -298,9 +391,7 @@ public class App extends Application {
 
         parent.setUserData(location);
         WorldClockController controller = fxmlLoader.getController();
-        parent.addEventHandler(CLEANUP_CLOCK, event -> {
-            controller.cleanup();
-        });
+        parent.addEventHandler(CLEANUP_CLOCK, event -> controller.cleanup());
         controller.init(location);
         return parent;
     }
@@ -313,12 +404,12 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        System.setProperty("prism.lcdtext", "false");
+        System.setProperty(LCD_FONT_PROP, "false");
         launch();
     }
 }
 
-/**
+/*
  Sunday    10:49
  March 19
  */

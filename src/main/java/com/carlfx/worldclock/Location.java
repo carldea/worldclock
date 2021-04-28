@@ -157,13 +157,13 @@ public class Location {
     }
 
     public double getLatitude() {
-        if (this.latLong == null || this.latLong.length > 0){
+        if (this.latLong == null || this.latLong.length == 0){
             return 0f;
         }
         return this.latLong[0];
     }
     public double getLongitude() {
-        if (this.latLong == null || this.latLong.length > 1){
+        if (this.latLong == null || this.latLong.length == 0){
             return 0f;
         }
         return this.latLong[1];

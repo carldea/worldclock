@@ -17,12 +17,14 @@
  *     along with JFX World Clock.  If not, see <http://www.gnu.org/licenses/>.
  */
 module worldclock {
+    requires java.desktop;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires jdk.jsobject;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
-    opens com.carlfx.worldclock to com.fasterxml.jackson.core, com.fasterxml.jackson.databind, com.fasterxml.jackson.annotation, javafx.fxml;
+    opens com.carlfx.worldclock to com.fasterxml.jackson.core, com.fasterxml.jackson.databind, com.fasterxml.jackson.annotation, javafx.fxml, javafx.web;
     exports com.carlfx.worldclock;
 }

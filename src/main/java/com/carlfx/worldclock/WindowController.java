@@ -57,7 +57,6 @@ public class WindowController {
     @FXML
     private void handleConfigWorldClockAction(MouseEvent mouseEvent) {
         if (configButton.equals(targetButton)) {
-            System.out.println("config button hit " + mouseEvent);
             isConfigShowing = !isConfigShowing;
             WorldClockEvent.trigger(configButton, new WorldClockEvent(CONFIG_SHOWING, this));
         }
