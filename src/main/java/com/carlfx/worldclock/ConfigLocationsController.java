@@ -135,7 +135,7 @@ public class ConfigLocationsController {
             if (!latitude.getText().isBlank() && !longitude.getText().isBlank()) {
                 location.setLatLong(latitude.getText(), longitude.getText());
             }
-
+            WorldClockEvent.trigger(longitude, WorldClockEvent.LOCATION_UPDATE, location);
         } else {
 
             if (stateSelected != null && !"".equals(stateSelected)) {

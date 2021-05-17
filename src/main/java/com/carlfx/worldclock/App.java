@@ -46,6 +46,8 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static com.carlfx.worldclock.WorldClockEvent.*;
 
@@ -125,39 +127,27 @@ public class App extends Application {
         windowContainer.setCenter(centerPane);
         makeDraggable(windowContainer);
 
-        WebView webView = createMap();
-        // load each location clock face
-        List<Parent> clocks = new ArrayList<>();
-        final WebEngine webEngine = webView.getEngine();
-        webEngine.setJavaScriptEnabled(true);
-        webEngine.setOnAlert(webEvent -> {
-            System.out.println(webEvent);
-            System.out.println(webEvent.getData());
+        // Create a WebView (index.html) containing a map. After map is finished loading add the pins of locations.
+        WebView webView = createMap((webEngine) -> {
+            for (Location location:locations) {
+                // Call JS function addMarker to add pins to the map based on locations.
+                webEngine.executeScript(
+                        "addMarker(\"%s\", %3.8f, %3.8f)".formatted(location.getFullLocationName(),
+                                location.getLatitude(), location.getLongitude()));
+            }
+            centerPane.setPrefHeight(configPane.getBoundsInLocal().getHeight());
         });
-        webEngine.getLoadWorker()
-                .stateProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue == Worker.State.SUCCEEDED) {
-                        for(Location location:locations) {
-                          webEngine.executeScript(String.format("addMarker(\"%s\", %3.8f, %3.8f)",
-                            location.getCity(), location.getLatitude(), location.getLongitude()));
-                        }
-                        centerPane.setPrefHeight(configPane.getBoundsInLocal().getHeight());
-                        System.out.println("config size " +  configPane.getBoundsInLocal().getHeight());
-                        System.out.println("clockList one clock height " + clockList.getChildren().get(0).getBoundsInLocal().getHeight());
-                        System.out.println("clockList width " + clockList.getWidth());
-                        System.out.println("config width " + configPane.getBoundsInLocal().getWidth());
-                    }
-                }
-        );
 
-        for(Location location:locations) {
-            // each controller will attach a listener for cleanup code.
-            clocks.add(createOneClock(webEngine, location));
-        }
+        // Obtain web engine
+        final WebEngine webEngine = webView.getEngine();
+
+        // Style the vbox
         clockList.getStyleClass().add("clock-background");
         clockList.getChildren()
-                .addAll(clocks);
+                .addAll(locations.stream()
+                        .map( location -> createOneClock(webEngine, location)) /* Create clock from FXML */
+                        .collect(Collectors.toList()));
+
         scrollPane.getStyleClass().add("clock-background");
 
         // Animate toggle between Config view vs World Clock List view
@@ -205,8 +195,8 @@ public class App extends Application {
         windowContainer.addEventHandler(LOCATION_ADD, event -> {
             Location location = event.getPayload();
             // Add a map marker
-            webEngine.executeScript(String.format("addMarker(\"%s\", %3.8f, %3.8f)",
-                    location.getCity(), location.getLatitude(), location.getLongitude()));
+            webEngine.executeScript("addMarker(\"%s\", %3.8f, %3.8f)".formatted(
+                    location.getFullLocationName(), location.getLatitude(), location.getLongitude()));
 
             // Make VBox visual rows(HBox) are in the same order.
             Iterator<Node> itr = clockList.getChildren().iterator();
@@ -221,25 +211,31 @@ public class App extends Application {
                 }
             }
 
+            Parent oneClockView = createOneClock(webEngine, location);
 
-            try {
-                Parent oneClockView = createOneClock(webEngine, location);
-
-                if (found && clockList.getChildren().size()-1 > 0) {
-                    // replace with new location
-                    clockList.getChildren().set(idx, oneClockView);
-                } else {
-                    clockList.getChildren().add(oneClockView);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (found && clockList.getChildren().size()-1 > 0) {
+                // replace with new location
+                clockList.getChildren().set(idx, oneClockView);
+            } else {
+                clockList.getChildren().add(oneClockView);
             }
+
+        });
+
+        // When location (lat/lon) changes remove old pin (marker) on map and replace
+        windowContainer.addEventHandler(LOCATION_UPDATE, event -> {
+            Location location = event.getPayload();
+            // Add a map marker
+            webEngine.executeScript("addMarker(\"%s\", %3.8f, %3.8f)".formatted(
+                    location.getFullLocationName(), location.getLatitude(), location.getLongitude()));
         });
 
         // Subscribe to a removed Location event
         windowContainer.addEventFilter(LOCATION_REMOVE, event -> {
             Location location = event.getPayload();
             System.out.println("window container location_remove heard!");
+            // Remove Pin a map marker
+            webEngine.executeScript("removeMarker(\"%s\")".formatted(location.getFullLocationName()));
 
             Iterator<Node> itr = clockList.getChildren().iterator();
             while (itr.hasNext()) {
@@ -294,17 +290,21 @@ public class App extends Application {
         stage.show();
     }
 
-    private Parent createOneClock(WebEngine webEngine, Location location) throws IOException {
-        Parent oneClockView = loadClockFXML(location);
-        oneClockView.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getClickCount() == 2) {
-                String jsCall = String.format("viewMapLocation(%3.8f, %3.8f)", location.getLatitude(), location.getLongitude());
-                System.out.println(jsCall);
-                webEngine.executeScript(jsCall);
-                System.out.println(location);
-            }
-        });
-        return oneClockView;
+    private Parent createOneClock(WebEngine webEngine, Location location) {
+        Parent oneClockView = null;
+        try {
+            oneClockView = loadClockFXML(location);
+            oneClockView.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2) {
+                    String jsCall = "viewMapLocation('%s')".formatted(location.getFullLocationName());
+                    webEngine.executeScript(jsCall);
+                }
+            });
+            return oneClockView;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     private Optional<Node> grabScrollBar(ScrollPane scrollPane, Orientation orientation) {
@@ -332,25 +332,30 @@ public class App extends Application {
      * A simple WebView containing a web page.
      * @return
      */
-    private WebView createMap() {
+    private WebView createMap(Consumer<WebEngine> addPointMarkers) {
         WebView webView = new WebView();
         webView.setPrefWidth(310);
         webView.setPrefHeight(310);
         WebEngine webEngine = webView.getEngine();
-        // Enable Javascript.
+        // Allows Java code to talk to JavaScript code
         webEngine.setJavaScriptEnabled(true);
-        webEngine.getLoadWorker().stateProperty().addListener(
-                (observable, oldValue, newValue) -> {
+        webEngine.setOnAlert(webEvent -> {
+            System.out.println("WebKit Alert: " + webEvent.getData());
+        });
 
+        webEngine
+                .getLoadWorker()
+                .stateProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue == Worker.State.SUCCEEDED) {
                         System.out.println("index.html loaded successfully");
+                        addPointMarkers.accept(webEngine);
                     } else {
                         System.out.println("WebEngine state " + newValue);
                     }
                 }
         );
 
-        webEngine.load(Objects.requireNonNull(getClass().getResource("index.html")).toExternalForm());
+        webEngine.load(getClass().getResource("index.html").toExternalForm());
         webView.requestFocus();
 
         return webView;
