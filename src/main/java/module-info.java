@@ -18,6 +18,7 @@
  */
 module worldclock {
     requires java.desktop;
+    requires java.net.http;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;

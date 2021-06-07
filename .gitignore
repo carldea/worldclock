@@ -4,3 +4,4 @@ target/
 *.iml
 */*.iml
 .DS_Store
+src/main/resources/com/carlfx/worldclock/openweathermap-appid.txt

@@ -5,6 +5,8 @@ Welcome to the World Clock application! This project is for a series of blog ent
 - https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-2
 - https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-3
 - https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-4
+- https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-5
+- https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-6
 
 ![A JavaFX World Clock](https://github.com/carldea/worldclock/blob/main/world-clock-part1_1.png?raw=true)
 ![A JavaFX World Clock Config](https://github.com/carldea/worldclock/blob/main/world-clock-part3_1.png?raw=true)
@@ -15,10 +17,16 @@ This is a standard Maven JavaFX modular (JPMS) application.
 - Maven 3.6.3 or greater
 - Java 16+
 - Bach (https://github.com/sormuras/bach) (Optional)
+- Register and obtain an appid (api key) from [OpenWeatherMap.org](https://openweathermap.org/)
 
-It's recommended if you use a JDK distro that already contains the OpenJFX libraries such as Azul's Zulu builds with JavaFX. 
-If not, then you must uncomment the dependencies needed in the pom.xml file.
+## OpenJDK build recommendations or suggestions
+It's recommended to use an OpenJDK distro that already contains the OpenJFX libraries such as Azul's Zulu builds with JavaFX.
+If not, then you can uncomment the dependencies needed in the pom.xml file.
 
+## Create a resource file containing the appid from OpenWeatherMap.org
+Because the World Clock app uses a weather service, the app will need to obtain the appid from a file you'll need to create locally. After registering and obtaining your API key you’ll need to add the API key into a text file named `openweathermap-appid.txt`. The file will need to be located in the project’s directory: `src/main/resources/com/carlfx/worldclock/`.
+
+The appid (API key) file is private (local) and will be ignored by GitHub (not checked into GitHub). An entry exists to ignore the file inside the `.gitignore` file. So, when you build the application local to you the resource file will be included in your build.
 ## Build project using Bach
 
 `$ .bach/bin/bach build`
@@ -76,5 +84,3 @@ $ jpackage --verbose \
 # Outstanding issues
 1. The map doesn't load properly when building and running the app as a built image.
 2. Map uses MapBox and Leaflet.js an access_token needs to be created. See https://www.mapbox.com/studio/account/tokens/ for details.
-3. Weather is still under construction. This may need an access_token too.
-

@@ -6,7 +6,6 @@
 <?import javafx.scene.effect.Bloom?>
 <?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.effect.Glow?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -19,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox prefWidth="314.0" styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WorldClockController">
+<HBox prefWidth="314.0" styleClass="clock-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.WorldClockController">
    <children>
       <VBox alignment="CENTER_RIGHT" prefHeight="104.0" prefWidth="149.0" style="-fx-background-color: #00000000;" styleClass="date-background" stylesheets="@styles.css">
          <children>
@@ -117,10 +116,10 @@
       </StackPane>
       <VBox alignment="TOP_CENTER">
          <children>
-            <ImageView fitHeight="57.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@04n2x.png" />
-               </image>
+            <ImageView fx:id="weatherIconImageView" fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets right="5.0" top="10.0" />
+               </VBox.margin>
             </ImageView>
             <Text fx:id="temperatureText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="temperature" text="33°C">
                <font>

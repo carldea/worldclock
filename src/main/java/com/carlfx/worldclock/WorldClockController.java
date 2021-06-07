@@ -18,6 +18,8 @@
  */
 package com.carlfx.worldclock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,18 +27,30 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -67,6 +81,12 @@ public class WorldClockController {
 
     @FXML
     private Text temperatureText;
+
+    @FXML
+    private ImageView weatherIconImageView;
+
+    private long startTime;
+    private Tooltip weatherToolTip;
 
     /**
      * Start Angle of arc to draw the minute hand (start).
@@ -150,6 +170,38 @@ public class WorldClockController {
         );
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+
+        BiConsumer<String, Throwable> updateWeatherUI =  (dayForecastJson, err) -> {
+            try {
+                // Parse weather JSON to obtain icon and weather temp info.
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> dayForecast = mapper.readValue(dayForecastJson, Map.class);
+                List<Map<String, Object>> weatherInfo = (List<Map<String, Object>>) dayForecast.get("weather");
+                Map<String, Object> weatherIconInfo = weatherInfo.size() > 0 ? weatherInfo.get(0) : null;
+                Map<String, Object> tempInfo = (Map<String, Object>) dayForecast.get("main");
+                // Load weather icon asynchronously
+                Image weatherIcon = new Image("https://openweathermap.org/img/wn/%s@2x.png".formatted(weatherIconInfo.get("icon")), true);
+                weatherIconImageView.setImage(weatherIcon);
+
+                // Apply Tooltip
+                if (weatherToolTip != null) {
+                    Tooltip.uninstall(weatherIconImageView, weatherToolTip);
+                }
+                weatherToolTip = new Tooltip(weatherIconInfo.get("description").toString());
+                Tooltip.install(weatherIconImageView, weatherToolTip);
+                // Apply Text of temp in celsius
+                String tempType = location.getTempType() == Location.TEMP_STD.CELSIUS || location.getTempType() == null ? "°C" : "°F";
+                String tempText = "%d%s".formatted( Math.round(Float.parseFloat(tempInfo.get("temp").toString())), tempType);
+                temperatureText.setText(tempText);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+        };
+        CompletableFuture<String> firstWeatherJsonFetch = getWeatherOutlook(location);
+        firstWeatherJsonFetch.whenComplete(updateWeatherUI);
+
+        // Every second tick this listener will update the ui.
         secondListener = (obs, ov, nv) -> {
             // Uncomment to test whether each clock's timeline and listeners are cleaned up.
             //System.out.println("tick tock " + location.getFullLocationName());
@@ -212,11 +264,76 @@ public class WorldClockController {
             String monthDateString = monthLongformat.format(ZonedDateTime.now(ZoneId.of(location.getTimezone()) ) );
             monthDate.setText(monthDateString);
 
-            String tempType = location.getTempType() == Location.TEMP_STD.CELSIUS ? "°C" : "°F";
-            temperatureText.setText( (int)location.getTemperature() + tempType);
+
+
+            // has 10 minutes elapsed yet, if so update weather icon and temp, else continue timer.
+            if (hasTimeElapsed(java.time.Duration.ofMinutes(10))) {
+                // TODO Config needs to allow user to choose metric or standard
+                // fetch the temp
+                CompletableFuture<String> weatherJsonFetch = getWeatherOutlook(location);
+                weatherJsonFetch.whenComplete(updateWeatherUI);
+            }
 
         };
         epochTime.addListener(secondListener);
 
+    }
+
+    /**
+     * Fetch JSON from openweathermap.org. having a three second timeout.
+     * @param uri
+     * @return
+     */
+    public CompletableFuture<String> fetch(String uri) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .timeout(java.time.Duration.ofMillis(3000))
+                .build();
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+    }
+
+    /**
+     * An async fetch to get current weather as a JSON string.
+     * @param location Location containing the latitude and longitude.
+     * @return
+     */
+    private CompletableFuture<String> getWeatherOutlook(Location location) {
+        if (location.getLatLong() == null || (location.getLongitude() == 0f) && location.getLatitude() == 0f) {
+            return CompletableFuture.failedFuture(new Throwable("No lat long defined"));
+        }
+
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
+        DecimalFormat df = new DecimalFormat("###.######");
+        try {
+            String appId = new String(Files.readAllBytes(Paths.get(getClass().getResource("openweathermap-appid.txt").toURI())));
+            if (appId == null) {
+                return CompletableFuture.failedFuture(new Throwable("Error. No API token (appid) set a file called openweathermap-appid.txt."));
+            }
+            return fetch("https://api.openweathermap.org/data/2.5/weather?units=metric&lat=%s&lon=%s&appid=%s".formatted(df.format(lat), df.format(lon), appId));
+        } catch (IOException | URISyntaxException e) {
+            return CompletableFuture.failedFuture(new Throwable("Error. No API token (appid) set a file called openweathermap-appid.txt."));
+        }
+    }
+
+    /**
+     * Create a simple named stop watch. For example, getting temperature once every 10 minutes.
+     *
+     * @param duration a length of time that has elapsed. When time has been reached the startTime is reset to zero.
+     * @return
+     */
+    private boolean hasTimeElapsed(java.time.Duration duration) {
+        long now = System.currentTimeMillis();
+        if (startTime == 0) {
+            startTime = now;
+        }
+        // elapsed so reset the timer
+        if ((now - startTime) >= duration.toMillis()) {
+            startTime = 0;
+            return true;
+        }
+        return false;
     }
 }
