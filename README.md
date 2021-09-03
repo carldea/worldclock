@@ -1,4 +1,9 @@
-# World Clock - A JavaFX World Clock <img align="right" src="https://i.ibb.co/QPDhWPZ/Works-with-Open-JDK.png" width="100">
+<a href="https://foojay.io/today/works-with-openjdk">
+   <img align="right" 
+        src="https://github.com/foojayio/badges/raw/main/works_with_openjdk/Works-with-OpenJDK.png"   
+        width="100">
+</a>
+# World Clock - A JavaFX World Clock
 Welcome to the World Clock application! This project is for a series of blog entries at https://foojay.io  
 
 - https://foojay.io/today/creating-a-javafx-world-clock-from-scratch-part-1
