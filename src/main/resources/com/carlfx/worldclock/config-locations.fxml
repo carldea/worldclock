@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="412.0" prefWidth="314.0" styleClass="clock-background" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.ConfigLocationsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="412.0" prefWidth="314.0" styleClass="clock-background" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.carlfx.worldclock.ConfigLocationsController">
    <children>
       <Text fill="WHITE" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-label-text" text="Locations Configurations" wrappingWidth="177.21630859375">
          <font>
@@ -60,7 +60,7 @@
                         <Insets top="5.0" />
                      </HBox.margin>
                   </Text>
-                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="GMT Offset" wrappingWidth="98.6875">
+                  <Text fill="#ffffff82" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label-text" text="Time Zone" wrappingWidth="98.6875">
                      <font>
                         <Font name="Roboto" size="12.0" />
                      </font>
@@ -83,20 +83,12 @@
                   </TextField>
                   <AnchorPane>
                      <children>
-                        <TextField fx:id="gmtOffset" prefHeight="23.0" prefWidth="104.0">
-                           <font>
-                              <Font name="Roboto" size="13.0" />
-                           </font>
-                           <styleClass>
-                              <String fx:value="config-text-fields" />
-                              <String fx:value="text-input" />
-                           </styleClass>
-                        </TextField>
-                        <Button fx:id="gmtErrorOverlayIcon" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="86.0" layoutY="6.0" mnemonicParsing="false" styleClass="error-overlay" text="Button">
-                           <tooltip>
-                              <Tooltip text="Must be from -12 through 0 (GMT) to +12" />
-                           </tooltip>
-                        </Button>
+                        <ComboBox fx:id="timeZoneComboBox" prefWidth="150.0" />
+<!--                        <Button fx:id="gmtErrorOverlayIcon" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="154.0" layoutY="5.0" mnemonicParsing="false" styleClass="error-overlay" text="Button">-->
+<!--                           <tooltip>-->
+<!--                              <Tooltip text="Must be from -12 through 0 (GMT) to +12" />-->
+<!--                           </tooltip>-->
+<!--                        </Button>-->
                      </children>
                   </AnchorPane>
                </children>

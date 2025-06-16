@@ -205,24 +205,14 @@ public class WorldClockController {
         secondListener = (obs, ov, nv) -> {
             // Uncomment to test whether each clock's timeline and listeners are cleaned up.
             //System.out.println("tick tock " + location.getFullLocationName());
-            String gmtOffset = location.getTimezone();
-            if (gmtOffset.indexOf("GMT") > -1) {
-                gmtOffset = gmtOffset.substring(3);
-            }
-            if ("".equals(gmtOffset.trim())) {
-                gmtOffset = "0";
-            }
-            gmtOffset = "GMT%+d".formatted(Integer.parseInt(gmtOffset));
-            Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(gmtOffset));
+            String timezone = location.getTimezone();
+            ZoneId zone = ZoneId.of(timezone);
+            Calendar newCalendar = Calendar.getInstance(TimeZone.getTimeZone(zone));
 
             newCalendar.setTime(new Date(nv.longValue()));
             SimpleDateFormat timeDisplay = new SimpleDateFormat("h:mm");
 
-            timeDisplay.setTimeZone(TimeZone.getTimeZone(gmtOffset));
-//            System.out.println(gmtOffset + " " +
-//                    location.getFullLocationName() + " " +
-//                    newCalendar.getTimeZone() +
-//                    " time " + timeDisplay.format(newCalendar.getTime()));
+            timeDisplay.setTimeZone(TimeZone.getTimeZone(zone));
 
             int hour = newCalendar.get(Calendar.HOUR) > 12 ? newCalendar.get(Calendar.HOUR)-12 : newCalendar.get(Calendar.HOUR); // 0-23
             hour = hour == 0 ? 12 : hour;

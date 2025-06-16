@@ -1,0 +1,328 @@
+﻿Time Zone ID,Description
+MIT,West Samoa Time
+Pacific/Apia,West Samoa Time
+Pacific/Niue,Niue Time
+Pacific/Pago_Pago,Samoa Standard Time
+America/Adak,Hawaii-Aleutian Standard Time
+HST,Hawaii Standard Time
+Pacific/Fakaofo,Tokelau Time
+Pacific/Honolulu,Hawaii Standard Time
+Pacific/Rarotonga,Cook Is. Time
+Pacific/Tahiti,Tahiti Time
+Pacific/Marquesas,Marquesas Time
+AST,Alaska Standard Time
+America/Anchorage,Alaska Standard Time
+Pacific/Gambier,Gambier Time
+America/Los_Angeles,Pacific Standard Time
+America/Tijuana,Pacific Standard Time
+America/Vancouver,Pacific Standard Time
+PST,Pacific Standard Time
+Pacific/Pitcairn,Pitcairn Standard Time
+America/Dawson_Creek,Mountain Standard Time
+America/Denver,Mountain Standard Time
+America/Edmonton,Mountain Standard Time
+America/Mazatlan,Mountain Standard Time
+America/Phoenix,Mountain Standard Time
+MST,Mountain Standard Time
+PNT,Mountain Standard Time
+America/Belize,Central Standard Time
+America/Chicago,Central Standard Time
+America/Costa_Rica,Central Standard Time
+America/El_Salvador,Central Standard Time
+America/Guatemala,Central Standard Time
+America/Managua,Central Standard Time
+America/Mexico_City,Central Standard Time
+America/Regina,Central Standard Time
+America/Tegucigalpa,Central Standard Time
+America/Winnipeg,Central Standard Time
+CST,Central Standard Time
+Pacific/Easter,Easter Is. Time
+Pacific/Galapagos,Galapagos Time
+America/Bogota,Colombia Time
+America/Cayman,Eastern Standard Time
+America/Grand_Turk,Eastern Standard Time
+America/Guayaquil,Ecuador Time
+America/Havana,Central Standard Time
+America/Indianapolis,Eastern Standard Time
+America/Jamaica,Eastern Standard Time
+America/Lima,Peru Time
+America/Montreal,Eastern Standard Time
+America/Nassau,Eastern Standard Time
+America/New_York,Eastern Standard Time
+America/Panama,Eastern Standard Time
+America/Port-au-Prince,Eastern Standard Time
+America/Porto_Acre,Acre Time
+America/Rio_Branco,GMT-05:00
+EST,Eastern Standard Time
+IET,Eastern Standard Time
+America/Anguilla,Atlantic Standard Time
+America/Antigua,Atlantic Standard Time
+America/Aruba,Atlantic Standard Time
+America/Asuncion,Paraguay Time
+America/Barbados,Atlantic Standard Time
+America/Caracas,Venezuela Time
+America/Cuiaba,Amazon Standard Time
+America/Curacao,Atlantic Standard Time
+America/Dominica,Atlantic Standard Time
+America/Grenada,Atlantic Standard Time
+America/Guadeloupe,Atlantic Standard Time
+America/Guyana,Guyana Time
+America/Halifax,Atlantic Standard Time
+America/La_Paz,Bolivia Time
+America/Manaus,Amazon Standard Time
+America/Martinique,Atlantic Standard Time
+America/Montserrat,Atlantic Standard Time
+America/Port_of_Spain,Atlantic Standard Time
+America/Puerto_Rico,Atlantic Standard Time
+America/Santiago,Chile Time
+America/Santo_Domingo,Atlantic Standard Time
+America/St_Kitts,Atlantic Standard Time
+America/St_Lucia,Atlantic Standard Time
+America/St_Thomas,Atlantic Standard Time
+America/St_Vincent,Atlantic Standard Time
+America/Thule,Atlantic Standard Time
+America/Tortola,Atlantic Standard Time
+Antarctica/Palmer,Chile Time
+Atlantic/Bermuda,Atlantic Standard Time
+Atlantic/Stanley,Falkland Is. Time
+PRT,Atlantic Standard Time
+America/St_Johns,Newfoundland Standard Time
+CNT,Newfoundland Standard Time
+AGT,Argentine Time
+America/Buenos_Aires,Argentine Time
+America/Cayenne,French Guiana Time
+America/Fortaleza,Brazil Time
+America/Godthab,Western Greenland Time
+America/Miquelon,Pierre & Miquelon Standard Time
+America/Montevideo,Uruguay Time
+America/Paramaribo,Suriname Time
+America/Sao_Paulo,Brazil Time
+BET,Brazil Time
+America/Noronha,Fernando de Noronha Time
+Atlantic/South_Georgia,South Georgia Standard Time
+America/Scoresbysund,Eastern Greenland Time
+Atlantic/Azores,Azores Time
+Atlantic/Cape_Verde,Cape Verde Time
+Atlantic/Jan_Mayen,Eastern Greenland Time
+Africa/Abidjan,Greenwich Mean Time
+Africa/Accra,Greenwich Mean Time
+Africa/Banjul,Greenwich Mean Time
+Africa/Bissau,Greenwich Mean Time
+Africa/Casablanca,Western European Time
+Africa/Conakry,Greenwich Mean Time
+Africa/Dakar,Greenwich Mean Time
+Africa/Freetown,Greenwich Mean Time
+Africa/Lome,Greenwich Mean Time
+Africa/Monrovia,Greenwich Mean Time
+Africa/Nouakchott,Greenwich Mean Time
+Africa/Ouagadougou,Greenwich Mean Time
+Africa/Sao_Tome,Greenwich Mean Time
+Africa/Timbuktu,Greenwich Mean Time
+Atlantic/Canary,Western European Time
+Atlantic/Faeroe,Western European Time
+Atlantic/Reykjavik,Greenwich Mean Time
+Atlantic/St_Helena,Greenwich Mean Time
+Europe/Dublin,Greenwich Mean Time
+Europe/Lisbon,Western European Time
+Europe/London,Greenwich Mean Time
+GMT,Greenwich Mean Time
+UTC,Coordinated Universal Time
+WET,Western European Time
+Africa/Algiers,Central European Time
+Africa/Bangui,Western African Time
+Africa/Douala,Western African Time
+Africa/Kinshasa,Western African Time
+Africa/Lagos,Western African Time
+Africa/Libreville,Western African Time
+Africa/Luanda,Western African Time
+Africa/Malabo,Western African Time
+Africa/Ndjamena,Western African Time
+Africa/Niamey,Western African Time
+Africa/Porto-Novo,Western African Time
+Africa/Tunis,Central European Time
+Africa/Windhoek,Western African Time
+ECT,Central European Time
+Europe/Amsterdam,Central European Time
+Europe/Andorra,Central European Time
+Europe/Belgrade,Central European Time
+Europe/Berlin,Central European Time
+Europe/Brussels,Central European Time
+Europe/Budapest,Central European Time
+Europe/Copenhagen,Central European Time
+Europe/Gibraltar,Central European Time
+Europe/Luxembourg,Central European Time
+Europe/Madrid,Central European Time
+Europe/Malta,Central European Time
+Europe/Monaco,Central European Time
+Europe/Oslo,Central European Time
+Europe/Paris,Central European Time
+Europe/Prague,Central European Time
+Europe/Rome,Central European Time
+Europe/Stockholm,Central European Time
+Europe/Tirane,Central European Time
+Europe/Vaduz,Central European Time
+Europe/Vienna,Central European Time
+Europe/Warsaw,Central European Time
+Europe/Zurich,Central European Time
+ART,Eastern European Time
+Africa/Blantyre,Central African Time
+Africa/Bujumbura,Central African Time
+Africa/Cairo,Eastern European Time
+Africa/Gaborone,Central African Time
+Africa/Harare,Central African Time
+Africa/Johannesburg,South Africa Standard Time
+Africa/Kigali,Central African Time
+Africa/Lubumbashi,Central African Time
+Africa/Lusaka,Central African Time
+Africa/Maputo,Central African Time
+Africa/Maseru,South Africa Standard Time
+Africa/Mbabane,South Africa Standard Time
+Africa/Tripoli,Eastern European Time
+Asia/Amman,Eastern European Time
+Asia/Beirut,Eastern European Time
+Asia/Damascus,Eastern European Time
+Asia/Jerusalem,Israel Standard Time
+Asia/Nicosia,Eastern European Time
+CAT,Central African Time
+EET,Eastern European Time
+Europe/Athens,Eastern European Time
+Europe/Bucharest,Eastern European Time
+Europe/Chisinau,Eastern European Time
+Europe/Helsinki,Eastern European Time
+Europe/Istanbul,Eastern European Time
+Europe/Kaliningrad,Eastern European Time
+Europe/Kiev,Eastern European Time
+Europe/Minsk,Eastern European Time
+Europe/Riga,Eastern European Time
+Europe/Simferopol,Eastern European Time
+Europe/Sofia,Eastern European Time
+Europe/Tallinn,Eastern European Time
+Europe/Vilnius,Eastern European Time
+Africa/Addis_Ababa,Eastern African Time
+Africa/Asmera,Eastern African Time
+Africa/Dar_es_Salaam,Eastern African Time
+Africa/Djibouti,Eastern African Time
+Africa/Kampala,Eastern African Time
+Africa/Khartoum,Eastern African Time
+Africa/Mogadishu,Eastern African Time
+Africa/Nairobi,Eastern African Time
+Asia/Aden,Arabia Standard Time
+Asia/Baghdad,Arabia Standard Time
+Asia/Bahrain,Arabia Standard Time
+Asia/Kuwait,Arabia Standard Time
+Asia/Qatar,Arabia Standard Time
+Asia/Riyadh,Arabia Standard Time
+EAT,Eastern African Time
+Europe/Moscow,Moscow Standard Time
+Indian/Antananarivo,Eastern African Time
+Indian/Comoro,Eastern African Time
+Indian/Mayotte,Eastern African Time
+Asia/Tehran,Iran Time
+MET,Iran Time
+Asia/Aqtau,Aqtau Time
+Asia/Baku,Azerbaijan Time
+Asia/Dubai,Gulf Standard Time
+Asia/Muscat,Gulf Standard Time
+Asia/Tbilisi,Georgia Time
+Asia/Yerevan,Armenia Time
+Europe/Samara,Samara Time
+Indian/Mahe,Seychelles Time
+Indian/Mauritius,Mauritius Time
+Indian/Reunion,Reunion Time
+NET,Armenia Time
+Asia/Kabul,Afghanistan Time
+Asia/Aqtobe,Aqtobe Time
+Asia/Ashgabat,Turkmenistan Time
+Asia/Ashkhabad,Turkmenistan Time
+Asia/Bishkek,Kirgizstan Time
+Asia/Dushanbe,Tajikistan Time
+Asia/Karachi,Pakistan Time
+Asia/Tashkent,Uzbekistan Time
+Asia/Yekaterinburg,Yekaterinburg Time
+Indian/Chagos,Indian Ocean Territory Time
+Indian/Kerguelen,French Southern & Antarctic Lands Time
+Indian/Maldives,Maldives Time
+PLT,Pakistan Time
+Asia/Calcutta,India Standard Time
+IST,India Standard Time
+Asia/Katmandu,Nepal Time
+Antarctica/Mawson,Mawson Time
+Asia/Almaty,Alma-Ata Time
+Asia/Colombo,Sri Lanka Time
+Asia/Dacca,Bangladesh Time
+Asia/Dhaka,Bangladesh Time
+Asia/Novosibirsk,Novosibirsk Time
+Asia/Thimbu,Bhutan Time
+Asia/Thimphu,Bhutan Time
+BST,Bangladesh Time
+Asia/Rangoon,Myanmar Time
+Indian/Cocos,Cocos Islands Time
+Asia/Bangkok,Indochina Time
+Asia/Jakarta,Java Time
+Asia/Krasnoyarsk,Krasnoyarsk Time
+Asia/Phnom_Penh,Indochina Time
+Asia/Saigon,Indochina Time
+Asia/Vientiane,Indochina Time
+Indian/Christmas,Christmas Island Time
+VST,Indochina Time
+Antarctica/Casey,Western Standard Time (Australia)
+Asia/Brunei,Brunei Time
+Asia/Hong_Kong,Hong Kong Time
+Asia/Irkutsk,Irkutsk Time
+Asia/Kuala_Lumpur,Malaysia Time
+Asia/Macao,China Standard Time
+Asia/Manila,Philippines Time
+Asia/Shanghai,China Standard Time
+Asia/Singapore,Singapore Time
+Asia/Taipei,China Standard Time
+Asia/Ujung_Pandang,Borneo Time
+Asia/Ulaanbaatar,Ulaanbaatar Time
+Asia/Ulan_Bator,Ulaanbaatar Time
+Australia/Perth,Western Standard Time (Australia)
+CTT,China Standard Time
+Asia/Jayapura,Jayapura Time
+Asia/Pyongyang,Korea Standard Time
+Asia/Seoul,Korea Standard Time
+Asia/Tokyo,Japan Standard Time
+Asia/Yakutsk,Yakutsk Time
+JST,Japan Standard Time
+Pacific/Palau,Palau Time
+ACT,Central Standard Time (Northern Territory)
+Australia/Adelaide,Central Standard Time (South Australia)
+Australia/Broken_Hill,Central Standard Time (South Australia/New South Wales)
+Australia/Darwin,Central Standard Time (Northern Territory)
+AET,Eastern Standard Time (New South Wales)
+Antarctica/DumontDUrville,Dumont-d'Urville Time
+Asia/Vladivostok,Vladivostok Time
+Australia/Brisbane,Eastern Standard Time (Queensland)
+Australia/Hobart,Eastern Standard Time (Tasmania)
+Australia/Sydney,Eastern Standard Time (New South Wales)
+Pacific/Guam,Chamorro Standard Time
+Pacific/Port_Moresby,Papua New Guinea Time
+Pacific/Saipan,Chamorro Standard Time
+Pacific/Truk,Truk Time
+Australia/Lord_Howe,Load Howe Standard Time
+Asia/Magadan,Magadan Time
+Pacific/Efate,Vanuatu Time
+Pacific/Guadalcanal,Solomon Is. Time
+Pacific/Kosrae,Kosrae Time
+Pacific/Noumea,New Caledonia Time
+Pacific/Ponape,Ponape Time
+SST,Solomon Is. Time
+Pacific/Norfolk,Norfolk Time
+Antarctica/McMurdo,New Zealand Standard Time
+Asia/Anadyr,Anadyr Time
+Asia/Kamchatka,Petropavlovsk-Kamchatski Time
+NST,New Zealand Standard Time
+Pacific/Auckland,New Zealand Standard Time
+Pacific/Fiji,Fiji Time
+Pacific/Funafuti,Tuvalu Time
+Pacific/Majuro,Marshall Islands Time
+Pacific/Nauru,Nauru Time
+Pacific/Tarawa,Gilbert Is. Time
+Pacific/Wake,Wake Time
+Pacific/Wallis,Wallis & Futuna Time
+Pacific/Chatham,Chatham Standard Time
+Pacific/Enderbury,Phoenix Is. Time
+Pacific/Tongatapu,Tonga Time
+Pacific/Kiritimati,Line Is. Time

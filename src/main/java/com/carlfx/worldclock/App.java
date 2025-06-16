@@ -19,6 +19,9 @@
 package com.carlfx.worldclock;
 
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -106,9 +109,8 @@ public class App extends Application {
 
         // load the config form
         Pane centerPane = new Pane();
-
         FXMLLoader configLocationLoader = new FXMLLoader(App.class.getResource("config-locations.fxml"));
-        Parent configPane = configLocationLoader.load();
+        Pane configPane = configLocationLoader.load();
         ConfigLocationsController configController = configLocationLoader.getController();
 
         // locations is a singleton from the config controller.
@@ -146,12 +148,13 @@ public class App extends Application {
         clockList.getChildren()
                 .addAll(locations.stream()
                         .map( location -> createOneClock(webEngine, location)) /* Create clock from FXML */
-                        .collect(Collectors.toList()));
+                        .toList());
 
         scrollPane.getStyleClass().add("clock-background");
 
         // Animate toggle between Config view vs World Clock List view
         windowContainer.addEventHandler(CONFIG_SHOWING, event -> {
+            // Location list will slide out of view.
             TranslateTransition moveList = new TranslateTransition();
             moveList.setNode(scrollPane);
             moveList.setDuration(Duration.millis(400));
@@ -166,10 +169,9 @@ public class App extends Application {
                 moveList.setToX(0);
             }
 
+            // Config Pane slide in view
             TranslateTransition moveConfig = new TranslateTransition();
-
             moveConfig.setNode(configPane);
-
             moveConfig.setDuration(Duration.millis(400));
             if (!windowController.isConfigShowing()) {
                 scrollPane.toFront();
@@ -183,10 +185,35 @@ public class App extends Application {
                 moveConfig.setFromX(-scrollPane.getWidth() + scrollPane.getPadding().getLeft() + scrollPane.getPadding().getRight());
                 moveConfig.setToX(0);
             }
+            // also move bottom portion to size.
+            // Create a Timeline for the animation
+//            Timeline moveBottomTimeline = new Timeline();
+//
+//            if (!windowController.isConfigShowing()) {
+//                // Create a KeyValue to set the height to the initial value
+//                KeyFrame startFrame = new KeyFrame(Duration.ZERO, new KeyValue(centerPane.maxWidthProperty(), scrollPane.getHeight()));
+//
+//                // Create a KeyValue to set the height to the final value
+//                KeyFrame endFrame = new KeyFrame(Duration.millis(400), new KeyValue(centerPane.maxWidthProperty(), configPane.heightProperty().get()));
+//
+//                // Add a KeyFrame to the timeline, linking the KeyValue with the duration
+//                moveBottomTimeline.getKeyFrames().addAll(startFrame, endFrame);
+//            } else {
+//                // Create a KeyValue to set the height to the initial value
+//                KeyFrame startFrame = new KeyFrame(Duration.ZERO, new KeyValue(centerPane.maxWidthProperty(), configPane.heightProperty().get()));
+//
+//                // Create a KeyValue to set the height to the final value
+//                KeyFrame endFrame = new KeyFrame(Duration.millis(400), new KeyValue(centerPane.maxWidthProperty(), scrollPane.getHeight()));
+//
+//                // Add a KeyFrame to the timeline, linking the KeyValue with the duration
+//                moveBottomTimeline.getKeyFrames().addAll(startFrame, endFrame);
+//            }
+
 //            System.out.println("clock list  width " + clockList.getWidth());
 //            System.out.println("config pane width " + configPane.getBoundsInParent().getWidth());
 //            System.out.println("window bar  width " + windowBar.getBoundsInParent().getWidth());
 //            System.out.println(" image      width " + mapImage.getBoundsInParent().getWidth());
+//            moveBottomTimeline.playFromStart();
             moveConfig.playFromStart();
             moveList.playFromStart();
         });
