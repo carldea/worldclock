@@ -369,6 +369,9 @@ public class App extends Application {
         webEngine.setOnAlert(webEvent -> {
             System.out.println("WebKit Alert: " + webEvent.getData());
         });
+        webEngine.setOnError(webEvent -> {
+            System.out.println("errors -----> " + webEvent);
+        });
 
         webEngine
                 .getLoadWorker()
@@ -376,6 +379,8 @@ public class App extends Application {
                     if (newValue == Worker.State.SUCCEEDED) {
                         System.out.println("index.html loaded successfully");
                         addPointMarkers.accept(webEngine);
+                    } else if (newValue == Worker.State.FAILED) {
+                        System.out.println("errors -----> " + observable);
                     } else {
                         System.out.println("WebEngine state " + newValue);
                     }

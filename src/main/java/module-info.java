@@ -26,6 +26,8 @@ module worldclock {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
-    opens com.carlfx.worldclock to com.fasterxml.jackson.core, com.fasterxml.jackson.databind, com.fasterxml.jackson.annotation, javafx.fxml, javafx.web;
+    opens com.carlfx.worldclock to com.fasterxml.jackson.core, com.fasterxml.jackson.databind, com.fasterxml.jackson.annotation, javafx.graphics, javafx.fxml, javafx.web, jdk.jsobject;
+    opens com.carlfx.worldclock.images to com.fasterxml.jackson.core, com.fasterxml.jackson.databind, com.fasterxml.jackson.annotation, javafx.graphics, javafx.fxml, javafx.web, jdk.jsobject;
+
     exports com.carlfx.worldclock;
 }

@@ -6,8 +6,8 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
-        <javafx.version>23</javafx.version>
+        <maven.compiler.release>25</maven.compiler.release>
+        <javafx.version>24.0.2</javafx.version>
     </properties>
     <dependencies>
         <!-- Uncomment out the following if you have downloaded JavaFX separately from GluonHQ -->
@@ -25,6 +25,11 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>jdk-jsobject</artifactId>
+            <version>25.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -61,11 +66,44 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
-                <configuration>
-                    <jlinkImageName>worldclock</jlinkImageName>
-                    <launcher>launcher</launcher>
-                    <mainClass>worldclock/com.carlfx.worldclock.App</mainClass>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <launcher>worldclock-launcher</launcher>
+                            <jlinkImageName>worldclock-runtime-image</jlinkImageName>
+                            <jlinkVerbose>true</jlinkVerbose>
+                            <jlinkZipName>worldclockJlink</jlinkZipName>
+                            <mainClass>worldclock/com.carlfx.worldclock.App</mainClass>
+                            <options>
+                                <option>--add-modules  jdk.jsobject</option>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>debug</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <launcher>worldclock-debug-launcher</launcher>
+                            <jlinkImageName>worldclock-debug-runtime-image</jlinkImageName>
+                            <jlinkVerbose>true</jlinkVerbose>
+                            <jlinkZipName>worldclockDebugJlink</jlinkZipName>
+                            <mainClass>worldclock/com.carlfx.worldclock.App</mainClass>
+                            <options>
+                                <option>
+                                    -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000
+                                </option>
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -6,122 +6,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
     <!-- Download source code locally for the Java client (resources directory) -->
-    <link rel="stylesheet" href="leaflet.css"
-          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-          crossorigin=""/>
-    <script src="leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
-    <style>
-        /* body will remove default white border surrounding the webview area */
-        body {
-            margin: 0;
-            overflow-x: hidden;
-            overflow-y: hidden;
-        }
+<!--    <link rel="stylesheet" href="https://app.unpkg.com/leaflet@1.9.4/files/dist/leaflet.css" />-->
+<!--&lt;!&ndash;    <script src="https://app.unpkg.com/leaflet@1.9.4/files/dist/leaflet.js" ></script>&ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"-->
+<!--          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="-->
+<!--          crossorigin=""/>-->
+<!--    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"-->
+<!--            integrity="sha256-20nQCchB9co0qIjJZs/nLlNlKjN7dzV3tOcBB5pFztc="-->
+<!--            crossorigin=""></script>-->
+<!--<link rel="stylesheet" href="leaflet.css"-->
+<!--      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="-->
+<!--      crossorigin=""/>-->
+<!--<script src="leaflet.js"-->
+<!--        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="-->
+<!--        crossorigin=""></script>-->
+<style>
+/* body will remove default white border surrounding the webview area */
+body {
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
 
-        /* CSS animation to pulse an SVG icon of a selected point on the map. */
-        @-webkit-keyframes pulse {
-            0% {-webkit-transform: scale(0.1, 0.1) translate(-.01, -.01); opacity: 0.0;}
-            50% {opacity: 1.0;}
-            100% {-webkit-transform: scale(2, 2) translate(-50, -50); opacity: 0.0;}
-        }
+/* CSS animation to pulse an SVG icon of a selected point on the map. */
+@-webkit-keyframes pulse {
+    0% {-webkit-transform: scale(0.1, 0.1) translate(-.01, -.01); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(2, 2) translate(-50, -50); opacity: 0.0;}
+}
 
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-    </style>
+.pulse {
+    animation: pulse 2s infinite;
+}
+</style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with Directions</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("DOM is ready!");
+            init();
+        });
+    </script>
 </head>
 <body>
    <div id="worldclock-map" style="width: 314px; height: 314px;"></div>
    <script>
-
-
        // TODO: replace name with a unique identifier. If name changes you can remove a marker, b/c it's based on name of city, country code
        const markerLayerMap = {}; // Map<name,marker>  name (String), marker Leaflet Marker object.
-
-       // [Base layer or Layer 1] using Open street map for data and Mapbox api to style map.
-       const osmBaseLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-           maxZoom: 18,
-           minZoom: 1,
-           attribution: 'Map data &copy; openstreetmap.org, ' +
-            '',
-           id: 'openstreetmap',
-           tileSize: 512,
-           zoomOffset: -1,
-           accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
-       });
-
-       // [Base layer or Layer 1] satellite view base layer using ESRI for data and Leaflet to display map
-       const arcgisBaseLayer = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-           maxZoom: 18,
-           minZoom: 1,
-           attribution: 'Map data &copy; esri.com/copyright',
-           id: 'leaflet',
-           tileSize: 512,
-           zoomOffset: -1
-       });
-
-       const baseLayers = {
-           "OpenStreetMap": osmBaseLayer,
-           "Satellite": arcgisBaseLayer
-       }
-       const layers = [osmBaseLayer, arcgisBaseLayer];
-
-       // Create a map zoomed out centered in the ocean left of Africa
-       const mymap = L.map('worldclock-map',{
-           doubleClickZoom: false,
-           center: [0.0, 0.0],
-           zoom: 15,
-           layers: layers[0],
-       }).setView([0.0, 0.0], 1); // center or just left of Africa
-
-
-
-       // [Layer 2] Add the scale control display metric.
-       L.control.scale({
-           position: "topright",
-           metric: true
-       }).addTo(mymap);
-
-       // [Layer 3] switch base layer control
-       L.control.layers(baseLayers).addTo(mymap);
-
-       // simple debugging to see which layer has been switched
-       mymap.on('baselayerchange', (layer) => alert('switched to: ',layer.name));
-
-       // A popup showing the lat lon whenever a user click on the surface of the map.
-       // This helps the user create locations for adding a clock for a city.
-       const popup = L.popup();
-       function onMapClick(e) {
-           popup
-               .setLatLng(e.latlng)
-               .setContent(`(lat, lon) (${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})`)
-               .openOn(mymap);
-       }
-       mymap.on('click', onMapClick);
+       let osmBaseLayer = null;
+       let arcgisBaseLayer = null;
+       let baseLayers = null;
+       let layers = [];
+       let mymap = null;
+       let popup = null;
 
        // an animated svg pin for a Leaflet icon.
        const animatedPin = (isPulse) => {
            const pulseCss = isPulse ? "pulse" : "";
            return `<div><svg  height="20" width="20"><circle class="" cx="10" cy="10" r="8" stroke="white" stroke-width="3" fill="#3F88F7" /><circle class="${pulseCss}" cx="10" cy="10" r="8" fill="#3F88F7" /></svg></div>`
        }
+       let pulsingPoint = null;
+       let nonPulsingPoint = null;
 
-       // A pulsing point
-       const pulsingPoint = L.divIcon({
-           className: 'css-icon',
-           html: animatedPin(true)
-           // Set marker width and height
-           ,iconSize: [20,20]
-       });
+       function init() {
 
-       // a non pulsing pin
-       const nonPulsingPoint = L.divIcon({
-           className: 'css-icon',
-           html: animatedPin(false)
-           // Set marker width and height
-           ,iconSize: [20,20]
-       });
+           // [Base layer or Layer 1] using Open street map for data and Mapbox api to style map.
+           osmBaseLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               maxZoom: 18,
+               minZoom: 1,
+               attribution: 'Map data &copy; openstreetmap.org, ' +
+                   '',
+               id: 'openstreetmap',
+               tileSize: 512,
+               zoomOffset: -1,
+               accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'
+           });
+
+           // [Base layer or Layer 1] satellite view base layer using ESRI for data and Leaflet to display map
+           arcgisBaseLayer = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+               maxZoom: 18,
+               minZoom: 1,
+               attribution: 'Map data &copy; esri.com/copyright',
+               id: 'leaflet',
+               tileSize: 512,
+               zoomOffset: -1
+           });
+
+           baseLayers = {
+               "OpenStreetMap": osmBaseLayer,
+               "Satellite": arcgisBaseLayer
+           }
+           layers = [osmBaseLayer, arcgisBaseLayer];
+
+           // Create a map zoomed out centered in the ocean left of Africa
+           mymap = L.map('worldclock-map',{
+               doubleClickZoom: false,
+               center: [0.0, 0.0],
+               zoom: 15,
+               layers: layers[0],
+           }).setView([0.0, 0.0], 1); // center or just left of Africa
+
+
+
+           // [Layer 2] Add the scale control display metric.
+           L.control.scale({
+               position: "topright",
+               metric: true
+           }).addTo(mymap);
+
+           // [Layer 3] switch base layer control
+           L.control.layers(baseLayers).addTo(mymap);
+
+           // simple debugging to see which layer has been switched
+           mymap.on('baselayerchange', (layer) => alert('switched to: ',layer.name));
+
+           // A popup showing the lat lon whenever a user click on the surface of the map.
+           // This helps the user create locations for adding a clock for a city.
+           popup = L.popup();
+           function onMapClick(e) {
+               popup
+                   .setLatLng(e.latlng)
+                   .setContent(`(lat, lon) (${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})`)
+                   .openOn(mymap);
+           }
+           mymap.on('click', onMapClick);
+
+
+
+           // A pulsing point
+           pulsingPoint = L.divIcon({
+               className: 'css-icon',
+               html: animatedPin(true)
+               // Set marker width and height
+               ,iconSize: [20,20]
+           });
+
+           // a non pulsing pin
+           nonPulsingPoint = L.divIcon({
+               className: 'css-icon',
+               html: animatedPin(false)
+               // Set marker width and height
+               ,iconSize: [20,20]
+           });
+       }
+
 
        /**
         * Adds a marker (a selected point) onto the map
@@ -130,6 +165,7 @@
         * @param lon - longitude
         */
        function addMarker(name, lat, lon) {
+           alert(L)
            const previousMarker = markerLayerMap[name];
            if (!previousMarker) {
                function customTip() {
