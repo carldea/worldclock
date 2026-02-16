@@ -34,6 +34,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -48,7 +50,11 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -131,6 +137,9 @@ public class App extends Application {
 
         // Create a WebView (index.html) containing a map. After map is finished loading add the pins of locations.
         WebView webView = createMap((webEngine) -> {
+            String accessToken = loadAccessToken();
+            String script = "init('" + accessToken + "')";
+            webEngine.executeScript(script);
             for (Location location:locations) {
                 // Call JS function addMarker to add pins to the map based on locations.
                 webEngine.executeScript(
@@ -378,6 +387,7 @@ public class App extends Application {
                 .stateProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue == Worker.State.SUCCEEDED) {
                         System.out.println("index.html loaded successfully");
+
                         addPointMarkers.accept(webEngine);
                     } else if (newValue == Worker.State.FAILED) {
                         System.out.println("errors -----> " + observable);
@@ -438,6 +448,29 @@ public class App extends Application {
     public void stop() {
         Platform.exit();
         System.exit(0);
+    }
+
+    private String loadAccessToken() {
+        // load open street map api key
+        String accessToken = "";
+        try {
+            accessToken = new String(Files.readAllBytes(Paths.get(getClass().getResource("openstreetmap-access-token.txt").toURI())));
+            if (accessToken == null) {
+                System.err.println("Error. No Access Token set a file called openstreetmap-access-token.txt.");
+                throw new RuntimeException("Error. No Access Token set a file called openstreetmap-access-token.txt.");
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error loading access token from file openstreetmap-access-token.txt");
+            alert.setHeaderText("Obtain Access Token from https://www.mapbox.com/ and save to file openstreetmap-access-token.txt");
+            alert.setContentText("Register and create file openstreetmap-access-token.txt with your access token.\n" + e.getMessage());
+
+            // Display the alert and wait for the user to close it
+            Optional<ButtonType> result = alert.showAndWait();
+            accessToken = "";
+        }
+
+        return accessToken;
     }
 
     public static void main(String[] args) {
